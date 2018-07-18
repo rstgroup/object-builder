@@ -7,7 +7,7 @@ class SomeAggregateRootCollectionOfObjectInConstructor
     public $list;
 
     /**
-     * @param \RstGroup\ObjectBuilder\Test\SimpleScalarConstructor[] $list
+     * @param SimpleScalarConstructor[] $list
      */
     public function __construct(array $list)
     {

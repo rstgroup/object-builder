@@ -2,7 +2,7 @@
 
 namespace RstGroup\ObjectBuilder\Builder;
 
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PhpParser\Node\Stmt;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -12,6 +12,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
+use Roave\BetterReflection\BetterReflection;
 use RstGroup\ObjectBuilder\Builder;
 use RstGroup\ObjectBuilder\BuilderException;
 
@@ -104,8 +105,20 @@ final class Reflection implements Builder
                 if ($node->parameterName === '$' . $parameter->getName()) {
                     $type = $node->type->type;
                     $list = [];
+
+                    $parser = (new BetterReflection())->phpParser();
+
+                    $parsedFile = $parser->parse(file_get_contents($constructor->getDeclaringClass()->getFileName()));
+                    $namespace = $this->getNamespaceStmt($parsedFile);
+                    $use = $this->getUseStmt($namespace);
+                    $namespaces = $this->getUsesNamespaces($use);
+
+                    if (0 === count($namespaces)) {
+                        $name = $constructor->getDeclaringClass()->getNamespaceName() . '\\' . $type->name;
+                    }
+
                     foreach($data as $objectConstructorData) {
-                        $list[] = $this->build($type->name, $objectConstructorData);
+                        $list[] = $this->build($name, $objectConstructorData);
                     }
                     return $list;
                 }
@@ -113,5 +126,41 @@ final class Reflection implements Builder
         }
 
         return $data;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     */
+    private function getNamespaceStmt(array $nodes): Stmt\Namespace_
+    {
+        foreach ($nodes as $node) {
+            if ($node instanceof Stmt\Namespace_) {
+                return $node;
+            }
+        }
+
+        return new Stmt\Namespace_();
+    }
+
+    private function getUseStmt(Stmt\Namespace_ $node): Stmt\Use_
+    {
+        foreach ($node->stmts as $node) {
+            if ($node instanceof Stmt\Use_) {
+                return $node;
+            }
+        }
+
+        return new Stmt\Use_([]);
+    }
+
+    /** @return string[] */
+    private function getUsesNamespaces(Stmt\Use_ $node): array
+    {
+        $names = [];
+        foreach ($node->uses as $use) {
+            $names[] = $use->name->toString();
+        }
+
+        return $names;
     }
 }
