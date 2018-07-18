@@ -2,6 +2,12 @@
 
 namespace RstGroup\ObjectBuilder\Builder;
 
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
+use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -50,7 +56,7 @@ final class Reflection implements Builder
                     $parsedData[$this->parameterNameStrategy->getName($key)] = $value;
                 }
 
-                yield $this->buildParameter($parameter, $parsedData[$name]);
+                yield $this->buildParameter($parameter, $parsedData[$name], $constructor);
             }
 
             if ($parameter->isDefaultValueAvailable()) {
@@ -74,7 +80,7 @@ final class Reflection implements Builder
      * @param mixed $data
      * @return mixed
      */
-    private function buildParameter(ReflectionParameter $parameter, $data)
+    private function buildParameter(ReflectionParameter $parameter, $data, ReflectionMethod $constructor)
     {
         $class = $parameter->getClass();
 
@@ -89,6 +95,21 @@ final class Reflection implements Builder
             }
 
             return new $name(...$parameters);
+        }
+
+        if ($parameter->isArray()) {
+            $parser = new PhpDocParser(new TypeParser(), new ConstExprParser());
+            $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($constructor->getDocComment())));
+            foreach ($node->getParamTagValues() as $node) {
+                if ($node->parameterName === '$' . $parameter->getName()) {
+                    $type = $node->type->type;
+                    $list = [];
+                    foreach($data as $objectConstructorData) {
+                        $list[] = $this->build($type->name, $objectConstructorData);
+                    }
+                    return $list;
+                }
+            }
         }
 
         return $data;

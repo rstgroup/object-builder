@@ -9,6 +9,7 @@ use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
+use RstGroup\ObjectBuilder\Test\SomeAggregateRootCollectionOfObjectInConstructor;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
 
 class ReflectionTest extends TestCase
@@ -72,6 +73,33 @@ class ReflectionTest extends TestCase
         $this->assertSame('some string', $object->someString);
         $this->assertSame(999, $object->someInt);
         $this->assertInstanceOf(SomeObjectWithEmptyConstructor::class, $object->someObject);
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithObjectCollectionInConstructor()
+    {
+        $data = [
+            'list' => [
+                [
+                    'someString' => 'some string1',
+                    'someInt' => 1,
+                ],
+                [
+                    'someString' => 'some string2',
+                    'someInt' => 2,
+                ],
+            ],
+        ];
+        $class = SomeAggregateRootCollectionOfObjectInConstructor::class;
+
+        /** @var SomeAggregateRootCollectionOfObjectInConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(SomeAggregateRootCollectionOfObjectInConstructor::class, $object);
+        $this->assertCount(2, $object->list);
+        foreach($object->list as $element) {
+            $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
+        }
     }
 
     /** @test */
