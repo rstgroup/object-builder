@@ -113,13 +113,12 @@ final class Reflection implements Builder
                     $use = $this->getUseStmt($namespace);
                     $namespaces = $this->getUsesNamespaces($use);
 
-                    if (0 === count($namespaces)) {
-                        $name = $constructor->getDeclaringClass()->getNamespaceName() . '\\' . $type->name;
+                    foreach($data as $objectConstructorData) {
+                        $list[] = $this->build(
+                            $this->getFullClassName($type->name, $namespaces, $constructor->getDeclaringClass()),
+                            $objectConstructorData);
                     }
 
-                    foreach($data as $objectConstructorData) {
-                        $list[] = $this->build($name, $objectConstructorData);
-                    }
                     return $list;
                 }
             }
@@ -162,5 +161,40 @@ final class Reflection implements Builder
         }
 
         return $names;
+    }
+
+    private function getFullClassName(string $name, array $namespaces, ReflectionClass $class): string
+    {
+        if ($name[0] === '\\') {
+            return $name;
+        }
+
+        if (0 === count($namespaces)) {
+            return $class->getNamespaceName() . '\\' . $name;
+        }
+
+        return $this->getNamespaceForClass($name, $namespaces);
+    }
+
+    /**
+     * @param string[] $namespaces
+     * @throws BuilderException
+     */
+    private function getNamespaceForClass(string $className, array $namespaces): string
+    {
+        foreach ($namespaces as $namespace) {
+            if ($this->endsWith($namespace, $className)) {
+                return $namespace;
+            }
+        }
+
+        throw new BuilderException();
+    }
+
+    private function endsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+
+        return $length === 0 || (substr($haystack, -$length) === $needle);
     }
 }

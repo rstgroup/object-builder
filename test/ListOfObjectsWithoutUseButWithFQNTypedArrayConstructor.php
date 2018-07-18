@@ -2,12 +2,12 @@
 
 namespace RstGroup\ObjectBuilder\Test;
 
-class SomeAggregateRootCollectionOfObjectInConstructor
+class ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor
 {
     public $list;
 
     /**
-     * @param SimpleScalarConstructor[] $list
+     * @param \RstGroup\ObjectBuilder\Test\Object\SomeObject[] $list
      */
     public function __construct(array $list)
     {

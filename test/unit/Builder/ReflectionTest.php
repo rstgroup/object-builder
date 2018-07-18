@@ -5,11 +5,14 @@ namespace RstGroup\ObjectBuilder\Test\unit\Builder;
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithUseStmtConstructor;
+use RstGroup\ObjectBuilder\Test\Object\SomeObject;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
-use RstGroup\ObjectBuilder\Test\SomeAggregateRootCollectionOfObjectInConstructor;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
 
 class ReflectionTest extends TestCase
@@ -76,7 +79,7 @@ class ReflectionTest extends TestCase
     }
 
     /** @test */
-    public function iCanBuildObjectWithObjectCollectionInConstructor()
+    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor()
     {
         $data = [
             'list' => [
@@ -90,15 +93,57 @@ class ReflectionTest extends TestCase
                 ],
             ],
         ];
-        $class = SomeAggregateRootCollectionOfObjectInConstructor::class;
+        $class = ListOfObjectsWithoutUseStmtConstructor::class;
 
-        /** @var SomeAggregateRootCollectionOfObjectInConstructor $object */
+        /** @var ListOfObjectsWithoutUseStmtConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(SomeAggregateRootCollectionOfObjectInConstructor::class, $object);
+        $this->assertInstanceOf(ListOfObjectsWithoutUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
         foreach($object->list as $element) {
             $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
+        }
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithObjectCollectionWithUseInConstructor()
+    {
+        $data = [
+            'list' => [
+                [],
+                [],
+            ],
+        ];
+        $class = ListOfObjectsWithUseStmtConstructor::class;
+
+        /** @var ListOfObjectsWithUseStmtConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(ListOfObjectsWithUseStmtConstructor::class, $object);
+        $this->assertCount(2, $object->list);
+        foreach($object->list as $element) {
+            $this->assertInstanceOf(SomeObject::class, $element);
+        }
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithObjectCollectionWithoutUseButWithFQNTypedArrayInConstructor()
+    {
+        $data = [
+            'list' => [
+                [],
+                [],
+            ],
+        ];
+        $class = ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor::class;
+
+        /** @var ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor::class, $object);
+        $this->assertCount(2, $object->list);
+        foreach($object->list as $element) {
+            $this->assertInstanceOf(SomeObject::class, $element);
         }
     }
 
