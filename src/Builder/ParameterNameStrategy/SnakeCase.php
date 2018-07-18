@@ -16,14 +16,10 @@ final class SnakeCase implements ParameterNameStrategy
         return $this->snakeCaseToCamelCase($parameterName);
     }
 
-    private function snakeCaseToCamelCase(string $string, bool $capitalizeFirstCharacter = false): string
+    private function snakeCaseToCamelCase(string $string): string
     {
         $str = str_replace('_', '', ucwords($string, '_'));
 
-        if (! $capitalizeFirstCharacter) {
-            $str = lcfirst($str);
-        }
-
-        return $str;
+        return lcfirst($str);
     }
 }

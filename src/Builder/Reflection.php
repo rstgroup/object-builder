@@ -9,12 +9,12 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
 use Roave\BetterReflection\BetterReflection;
 use RstGroup\ObjectBuilder\Builder;
 use RstGroup\ObjectBuilder\BuilderException;
+use Throwable;
 
 final class Reflection implements Builder
 {
@@ -40,8 +40,8 @@ final class Reflection implements Builder
             $parameters = iterator_to_array($this->collect($constructor, $data));
 
             return new $class(...$parameters);
-        } catch (ReflectionException $exception) {
-            throw new BuilderException();
+        } catch (Throwable $exception) {
+            throw new BuilderException('Cant build object', 0, $exception);
         }
     }
 
@@ -188,10 +188,10 @@ final class Reflection implements Builder
             }
         }
 
-        throw new BuilderException();
+        throw new BuilderException('Can not resolve namespace for class ' . $className);
     }
 
-    private function endsWith($haystack, $needle)
+    private function endsWith(string $haystack, string $needle): bool
     {
         $length = strlen($needle);
 
