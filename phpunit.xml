@@ -1,0 +1,29 @@
+<phpunit bootstrap="vendor/autoload.php"
+         backupStaticAttributes="false"
+         backupGlobals="false"
+         colors="true"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         verbose="true">
+
+    <testsuites>
+        <testsuite name="unit">
+            <directory>test/unit/</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix=".php">test</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+</phpunit>
