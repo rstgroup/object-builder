@@ -25,5 +25,10 @@
     "sort-packages": true
   },
   "scripts": {
+    "check": [
+      "@test"
+    ],
+    "test": "phpunit --colors=always",
+    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
   }
 }
