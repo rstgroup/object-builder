@@ -11,9 +11,15 @@ use RstGroup\ObjectBuilder\BuilderException;
 
 final class Reflection implements Builder
 {
+    private $parameterNameStrategy;
+
+    public function __construct(ParameterNameStrategy $parameterNameStrategy)
+    {
+        $this->parameterNameStrategy = $parameterNameStrategy;
+    }
+
     /**
      * @param mixed[] $data
-     *
      * @throws BuilderException
      */
     public function build(string $class, array $data): object
@@ -41,29 +47,11 @@ final class Reflection implements Builder
         foreach ($constructor->getParameters() as $parameter) {
             $name = $parameter->getName();
 
-            if (isset($data[$name])) {
-                $parameters[] = $this->buildParameter(
-                    $parameter,
-                    $data[$name]
-                );
-
-                continue;
-            }
-
-            if (isset($data[$name])) {
-                $parameters[] = $this->buildParameter(
-                    $parameter,
-                    $data[$name]
-                );
-
-                continue;
-            }
-
             if (in_array($name, $this->denormalizeKeys($data), true)) {
                 $parsedData = [];
 
                 foreach ($data as $key => $value) {
-                    $parsedData[$this->underscoresToCamelCase($key)] = $value;
+                    $parsedData[$this->parameterNameStrategy->getName($key)] = $value;
                 }
                 $parameters[] = $this->buildParameter(
                     $parameter,
@@ -119,20 +107,9 @@ final class Reflection implements Builder
         $keys = [];
 
         foreach (array_keys($data) as $key) {
-            $keys[] = $this->underscoresToCamelCase($key);
+            $keys[] = $this->parameterNameStrategy->getName($key);
         }
 
         return $keys;
-    }
-
-    private function underscoresToCamelCase(string $string, bool $capitalizeFirstCharacter = false): string
-    {
-        $str = str_replace('_', '', ucwords($string, '_'));
-
-        if (! $capitalizeFirstCharacter) {
-            $str = lcfirst($str);
-        }
-
-        return $str;
     }
 }

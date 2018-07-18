@@ -3,6 +3,7 @@
 namespace RstGroup\ObjectBuilder\Test\unit\Builder;
 
 use PHPUnit\Framework\TestCase;
+use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
@@ -16,7 +17,7 @@ class ReflectionTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        static::$builder = new Reflection();
+        static::$builder = new Reflection(new Simple());
     }
 
     /** @test */
