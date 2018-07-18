@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
+use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
@@ -51,6 +52,23 @@ class ReflectionTest extends TestCase
         $object = static::$builder->build($class, $data);
 
         $this->assertInstanceOf(SimpleMixedConstructor::class, $object);
+        $this->assertSame('some string', $object->someString);
+        $this->assertSame(999, $object->someInt);
+        $this->assertInstanceOf(SomeObjectWithEmptyConstructor::class, $object->someObject);
+    }
+
+    /** @test */
+    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor()
+    {
+        $data = [
+            'someObject' => [],
+        ];
+        $class = SimpleMixedConstructorWithDefaultValue::class;
+
+        /** @var SimpleMixedConstructorWithDefaultValue $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(SimpleMixedConstructorWithDefaultValue::class, $object);
         $this->assertSame('some string', $object->someString);
         $this->assertSame(999, $object->someInt);
         $this->assertInstanceOf(SomeObjectWithEmptyConstructor::class, $object->someObject);

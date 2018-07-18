@@ -25,10 +25,12 @@ final class Reflection implements Builder
     public function build(string $class, array $data): object
     {
         try {
-            $commandReflection = new ReflectionClass($class);
+            $classReflection = new ReflectionClass($class);
+
             /** @var ReflectionMethod $constructorMethod */
-            $constructorMethod = $commandReflection->getConstructor();
-            $parameters = $this->collectParameters($constructorMethod, $data);
+            $constructor = $classReflection->getConstructor();
+
+            $parameters = iterator_to_array($this->collect($constructor, $data));
 
             return new $class(...$parameters);
         } catch (ReflectionException $exception) {
@@ -36,39 +38,36 @@ final class Reflection implements Builder
         }
     }
 
-    /**
-     * @param mixed[] $data
-     * @return mixed[]
-     */
-    private function collectParameters(ReflectionMethod $constructor, array $data): array
+    private function collect(ReflectionMethod $constructor, array $data): iterable
     {
-        $parameters = [];
-
         foreach ($constructor->getParameters() as $parameter) {
             $name = $parameter->getName();
 
-            if (in_array($name, $this->denormalizeKeys($data), true)) {
+            if ($this->parameterDataIsInData($name, $data)) {
                 $parsedData = [];
 
                 foreach ($data as $key => $value) {
                     $parsedData[$this->parameterNameStrategy->getName($key)] = $value;
                 }
-                $parameters[] = $this->buildParameter(
-                    $parameter,
-                    $parsedData[$name]
-                );
 
-                continue;
+                yield $this->buildParameter($parameter, $parsedData[$name]);
             }
 
             if ($parameter->isDefaultValueAvailable()) {
-                $parameters[] = $parameter->getDefaultValue();
+                yield $parameter->getDefaultValue();
+            }
+        }
+    }
 
-                continue;
+    private function parameterDataIsInData(string $parameterName, array $data): bool
+    {
+        foreach (array_keys($data) as $key) {
+            if ($parameterName === $this->parameterNameStrategy->getName($key)) {
+                return true;
             }
         }
 
-        return $parameters;
+        return false;
     }
 
     /**
@@ -86,30 +85,12 @@ final class Reflection implements Builder
             $parameters = [];
 
             if (null !== $constructorMethod) {
-                $parameters = $this->collectParameters(
-                    $constructorMethod,
-                    $data
-                );
+                $parameters = iterator_to_array($this->collect($constructorMethod, $data));
             }
 
             return new $name(...$parameters);
         }
 
         return $data;
-    }
-
-    /**
-     * @param string[] $data
-     * @return string[]
-     */
-    private function denormalizeKeys(array $data): array
-    {
-        $keys = [];
-
-        foreach (array_keys($data) as $key) {
-            $keys[] = $this->parameterNameStrategy->getName($key);
-        }
-
-        return $keys;
     }
 }
