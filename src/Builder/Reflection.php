@@ -110,8 +110,8 @@ final class Reflection implements Builder
 
                     $parsedFile = $parser->parse(file_get_contents($constructor->getDeclaringClass()->getFileName()));
                     $namespace = $this->getNamespaceStmt($parsedFile);
-                    $use = $this->getUseStmt($namespace);
-                    $namespaces = $this->getUsesNamespaces($use);
+                    $uses = $this->getUseStmts($namespace);
+                    $namespaces = $this->getUsesNamespaces($uses);
 
                     foreach($data as $objectConstructorData) {
                         $list[] = $this->build(
@@ -141,23 +141,28 @@ final class Reflection implements Builder
         return new Stmt\Namespace_();
     }
 
-    private function getUseStmt(Stmt\Namespace_ $node): Stmt\Use_
+    /** @return Stmt\Use_[] */
+    private function getUseStmts(Stmt\Namespace_ $node): array
     {
+        $uses = [];
         foreach ($node->stmts as $node) {
             if ($node instanceof Stmt\Use_) {
-                return $node;
+                $uses[]= $node;
             }
         }
 
-        return new Stmt\Use_([]);
+        return $uses;
     }
 
-    /** @return string[] */
-    private function getUsesNamespaces(Stmt\Use_ $node): array
+    /**
+     * @param Stmt\Use_[] $uses
+     * @return string[]
+     */
+    private function getUsesNamespaces(array $uses): array
     {
         $names = [];
-        foreach ($node->uses as $use) {
-            $names[] = $use->name->toString();
+        foreach ($uses as $use) {
+            $names[] = $use->uses[0]->name->toString();
         }
 
         return $names;

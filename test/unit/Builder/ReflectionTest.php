@@ -6,13 +6,14 @@ use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\Object\SomeObject;
+use RstGroup\ObjectBuilder\Test\Object\SomeSecondObject;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
-use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
 
 class ReflectionTest extends TestCase
@@ -122,7 +123,7 @@ class ReflectionTest extends TestCase
         $this->assertInstanceOf(ListOfObjectsWithUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
         foreach($object->list as $element) {
-            $this->assertInstanceOf(SomeObject::class, $element);
+            $this->assertInstanceOf(SomeSecondObject::class, $element);
         }
     }
 
