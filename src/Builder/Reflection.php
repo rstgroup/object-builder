@@ -103,7 +103,10 @@ final class Reflection implements Builder
             $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($constructor->getDocComment())));
             foreach ($node->getParamTagValues() as $node) {
                 if ($node->parameterName === '$' . $parameter->getName()) {
-                    $type = $node->type->type;
+                    $typeName = $node->type->type->name;
+                    if ($this->isScalar($typeName)) {
+                        continue;
+                    }
                     $list = [];
 
                     $parser = (new BetterReflection())->phpParser();
@@ -115,8 +118,9 @@ final class Reflection implements Builder
 
                     foreach($data as $objectConstructorData) {
                         $list[] = $this->build(
-                            $this->getFullClassName($type->name, $namespaces, $constructor->getDeclaringClass()),
-                            $objectConstructorData);
+                            $this->getFullClassName($typeName, $namespaces, $constructor->getDeclaringClass()),
+                            $objectConstructorData
+                        );
                     }
 
                     return $list;
@@ -125,6 +129,19 @@ final class Reflection implements Builder
         }
 
         return $data;
+    }
+
+    private function isScalar(string $value): bool
+    {
+        $scalars = [
+            'string',
+            'int',
+            'float',
+            'double',
+            'mixed',
+        ];
+
+        return in_array($value, $scalars);
     }
 
     /**

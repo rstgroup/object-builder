@@ -7,6 +7,8 @@ use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithScalarTypedArrayAndObjectListConstructor;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithScalarTypedArrayConstructor;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\Object\SomeObject;
 use RstGroup\ObjectBuilder\Test\Object\SomeSecondObject;
@@ -145,6 +147,61 @@ class ReflectionTest extends TestCase
         $this->assertCount(2, $object->list);
         foreach($object->list as $element) {
             $this->assertInstanceOf(SomeObject::class, $element);
+        }
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithScalarCollectionTypedArrayInConstructor()
+    {
+        $data = [
+            'list1' => ['str', 'str'],
+            'list2' => ['str', 'str'],
+        ];
+        $class = ListOfObjectsWithScalarTypedArrayConstructor::class;
+
+        /** @var ListOfObjectsWithScalarTypedArrayConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayConstructor::class, $object);
+        $this->assertCount(2, $object->list1);
+        $this->assertCount(2, $object->list2);
+        foreach($object->list1 as $element) {
+            $this->assertSame('str', $element);
+        }
+        foreach($object->list2 as $element) {
+            $this->assertSame('str', $element);
+        }
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithBothScalarAndObjectCollectionTypedArrayInConstructor()
+    {
+        $data = [
+            'list1' => ['str', 'str'],
+            'list2' => [
+                [
+                    'someString' => 'some string1',
+                    'someInt' => 1,
+                ],
+                [
+                    'someString' => 'some string2',
+                    'someInt' => 2,
+                ],
+            ],
+        ];
+        $class = ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class;
+
+        /** @var ListOfObjectsWithScalarTypedArrayAndObjectListConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class, $object);
+        $this->assertCount(2, $object->list1);
+        $this->assertCount(2, $object->list2);
+        foreach($object->list1 as $element) {
+            $this->assertSame('str', $element);
+        }
+        foreach($object->list2 as $element) {
+            $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
         }
     }
 
