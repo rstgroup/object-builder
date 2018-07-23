@@ -13,6 +13,11 @@ abstract class Node
         $this->defaultValue = $defaultValue;
     }
 
+    public function name(): string
+    {
+        return $this->name;
+    }
+
     public function withDefaultValue(): bool
     {
         return null !== $this->defaultValue;

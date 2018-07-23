@@ -20,7 +20,10 @@ class AnonymousTest extends TestCase
         $blueprint = $factory->create($class);
 
         $this->assertSame(
-'<?php return function(array $data) use ($class): string {
+'<?php
+
+return function(array $data) use ($class): string {
+
     return new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor();
 }',
             $blueprint
@@ -36,29 +39,45 @@ class AnonymousTest extends TestCase
         $blueprint = $factory->create($class);
 
         $this->assertSame(
-            '<?php return function(array $data) use ($class): string {
+            '<?php
+
+return function(array $data) use ($class): string {
+
     return new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
 }',
             $blueprint
         );
     }
 
-// TODO
-//    /** @test */
-//    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor()
-//    {
-//        $factory = new Anonymous();
-//        $class = SimpleMixedConstructorWithDefaultValue::class;
-//
-//        $blueprint = $factory->create($class);
-//
-//        $this->assertSame(
-//            '<?php return function(array $data) use ($class): string {
-//    return new RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue(new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor(), $data[\'someString\'], $data[\'someInt\']);
-//}',
-//            $blueprint
-//        );
-//    }
+    /** @test */
+    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor()
+    {
+        $factory = new Anonymous();
+        $class = SimpleMixedConstructorWithDefaultValue::class;
+
+        $blueprint = $factory->create($class);
+
+        $this->assertSame(
+            '<?php
+
+return function(array $data) use ($class): string {
+    $default = array (
+  \'someString\' => 
+  array (
+    \'someString\' => \'some string\',
+  ),
+  \'someInt\' => 
+  array (
+    \'someInt\' => 999,
+  ),
+);
+    $data = array_merge($default, $data);
+
+    return new RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue(new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor(), $data[\'someString\'], $data[\'someInt\']);
+}',
+            $blueprint
+        );
+    }
 
     /** @test */
     public function iCanBuildAdvancedObjectHierarchy()
@@ -69,7 +88,10 @@ class AnonymousTest extends TestCase
         $blueprint = $factory->create($class);
 
         $this->assertSame(
-            '<?php return function(array $data) use ($class): string {
+            '<?php
+
+return function(array $data) use ($class): string {
+
     return new RstGroup\ObjectBuilder\Test\SomeAggregateRoot($data[\'someString\'], new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']), new RstGroup\ObjectBuilder\Test\SimpleMixedConstructor($data[\'someString\'], $data[\'someInt\'], new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor()), $data[\'someInt\']);
 }',
             $blueprint
