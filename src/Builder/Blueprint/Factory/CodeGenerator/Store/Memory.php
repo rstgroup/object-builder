@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace RstGroup\ObjectBuilder\Builder\Blueprint\Store;
+namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store;
 
-use RstGroup\ObjectBuilder\Builder\Blueprint\Store;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store;
 use Throwable;
 
 final class Memory implements Store
@@ -12,13 +12,13 @@ final class Memory implements Store
     public function get(string $class): callable
     {
         try {
-            return $this->store[$class];
+            return eval($this->store[$class]);
         } catch (Throwable $exception) {
             return null;
         }
     }
 
-    public function save(string $class, callable $blueprint): void
+    public function save(string $class, string $blueprint): void
     {
         $this->store[$class] = $blueprint;
     }
