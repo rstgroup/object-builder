@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionParameter;
 use Roave\BetterReflection\BetterReflection;
+use RstGroup\ObjectBuilder\BuilderException;
 
 class PhpDocParser
 {
@@ -100,5 +101,27 @@ class PhpDocParser
         }
 
         return $this->getNamespaceForClass($name, $namespaces);
+    }
+
+    /**
+     * @param string[] $namespaces
+     * @throws BuilderException
+     */
+    private function getNamespaceForClass(string $className, array $namespaces): string
+    {
+        foreach ($namespaces as $namespace) {
+            if ($this->endsWith($namespace, $className)) {
+                return $namespace;
+            }
+        }
+
+        throw new BuilderException('Can not resolve namespace for class ' . $className);
+    }
+
+    private function endsWith(string $haystack, string $needle): bool
+    {
+        $length = strlen($needle);
+
+        return $length === 0 || (substr($haystack, -$length) === $needle);
     }
 }

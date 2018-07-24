@@ -2,7 +2,6 @@
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
 
-
 use ReflectionClass;
 use ReflectionMethod;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Complex;
