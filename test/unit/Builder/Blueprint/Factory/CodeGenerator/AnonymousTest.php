@@ -4,6 +4,7 @@ namespace RstGroup\ObjectBuilder\Test\unit\Builder\Blueprint\Factory\CodeGenerat
 
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Anonymous;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
@@ -22,7 +23,7 @@ class AnonymousTest extends TestCase
         $this->assertSame(
 '<?php
 
-return function(array $data) use ($class): string {
+return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor();
 }',
@@ -41,7 +42,7 @@ return function(array $data) use ($class): string {
         $this->assertSame(
             '<?php
 
-return function(array $data) use ($class): string {
+return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
 }',
@@ -60,16 +61,10 @@ return function(array $data) use ($class): string {
         $this->assertSame(
             '<?php
 
-return function(array $data) use ($class): string {
+return function(array $data) use ($class): object {
     $default = array (
-  \'someString\' => 
-  array (
-    \'someString\' => \'some string\',
-  ),
-  \'someInt\' => 
-  array (
-    \'someInt\' => 999,
-  ),
+  \'someString\' => \'some string\',
+  \'someInt\' => 999,
 );
     $data = array_merge($default, $data);
 
@@ -90,11 +85,34 @@ return function(array $data) use ($class): string {
         $this->assertSame(
             '<?php
 
-return function(array $data) use ($class): string {
+return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\SomeAggregateRoot($data[\'someString\'], new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']), new RstGroup\ObjectBuilder\Test\SimpleMixedConstructor($data[\'someString\'], $data[\'someInt\'], new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor()), $data[\'someInt\']);
 }',
             $blueprint
         );
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor()
+    {
+        $factory = new Anonymous();
+        $class = ListOfObjectsWithoutUseStmtConstructor::class;
+
+        $blueprint = $factory->create($class);
+
+        $this->assertSame('<?php
+
+return function(array $data) use ($class): object {
+
+    return new RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor((function (array $list) {
+            $arr = [];
+            foreach ($list as $data) {
+                $arr[] = new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
+            }
+            
+            return $arr;
+        })($data));
+}', $blueprint);
     }
 }

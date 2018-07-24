@@ -6,6 +6,7 @@ namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
 use ReflectionClass;
 use ReflectionMethod;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Complex;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\ObjectList;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Scalar;
 
 final class Anonymous
@@ -18,10 +19,18 @@ final class Anonymous
 . '    $data = array_merge($default, $data);'
 . "\n";
     private const FUNCTION_PATTERN =
-'function(array $data) use ($class): string {
+'function(array $data) use ($class): object {
 %s
     return %s;
 }';
+
+    /** @var PhpDocParser */
+    private $phpDocParser;
+
+    public function __construct()
+    {
+        $this->phpDocParser = new PhpDocParser();
+    }
 
     public function create(string $class): string
     {
@@ -60,11 +69,9 @@ final class Anonymous
 
             if (null === $class) {
                 $node->add(
-                    new Scalar(
-                        $parameter->getName(),
-                        $parameter->isDefaultValueAvailable()
-                            ? $parameter->getDefaultValue()
-                            : null
+                    $this->createNode(
+                        $parameter,
+                        $method->getDocComment() ? $method->getDocComment() : ''
                     )
                 );
                 continue;
@@ -74,6 +81,29 @@ final class Anonymous
         }
 
         return $node;
+    }
+
+    private function createNode(\ReflectionParameter $parameter, string $phpDoc): Node
+    {
+        $type = $parameter->getType()->getName();
+
+        if ($type === 'array'
+            && $this->phpDocParser->isListOfObject($phpDoc, $parameter)) {
+            $class = $this->phpDocParser->getListType($phpDoc, $parameter);
+
+            return new ObjectList(
+                $parameter->getName(),
+                $this->getNode(new ReflectionClass($class))
+            );
+        }
+
+        return new Scalar(
+            $type,
+            $parameter->getName(),
+            $parameter->isDefaultValueAvailable()
+                ? $parameter->getDefaultValue()
+                : null
+        );
     }
 
     private function getDefaultSection(Node $node): string
@@ -90,7 +120,8 @@ final class Anonymous
         return $defaultSection;
     }
 
-    private function getDefaultValues(Node $node): array
+    /** @return mixed */
+    private function getDefaultValues(Node $node)
     {
         $values = [];
 
@@ -104,7 +135,7 @@ final class Anonymous
         }
 
         if ($node->withDefaultValue()) {
-            $values[$node->name()] = $node->defaultValue();
+            $values = $node->defaultValue();
         }
 
         return $values;

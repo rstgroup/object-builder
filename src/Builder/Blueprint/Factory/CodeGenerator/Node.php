@@ -6,11 +6,18 @@ abstract class Node
 {
     protected $name;
     private $defaultValue;
+    private $type;
 
-    public function __construct(string $name, $defaultValue = null)
+    public function __construct(string $type, string $name, $defaultValue = null)
     {
         $this->name = $name;
         $this->defaultValue = $defaultValue;
+        $this->type = $type;
+    }
+
+    public function type(): string
+    {
+        return $this->type;
     }
 
     public function name(): string

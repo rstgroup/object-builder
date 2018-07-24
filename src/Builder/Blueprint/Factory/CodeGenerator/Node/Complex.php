@@ -8,18 +8,6 @@ final class Complex extends Node
 {
     /** @var Node */
     private $nodes = [];
-    private $class;
-
-    public function __construct(string $class, string $name = '', $defaultValue = null)
-    {
-        parent::__construct($name, $defaultValue);
-        $this->class = $class;
-    }
-
-    public function getClass(): string
-    {
-        return $this->class;
-    }
 
     public function add(Node $node): void
     {
@@ -36,7 +24,7 @@ final class Complex extends Node
     {
         return sprintf(
             'new %s(%s)',
-            $this->getClass(),
+            $this->type(),
             implode(', ', $this->nodes)
         );
     }

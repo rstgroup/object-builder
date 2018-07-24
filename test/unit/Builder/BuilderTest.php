@@ -148,13 +148,13 @@ abstract class BuilderTest extends TestCase
     public function iCanBuildAdvancedObjectHierarchy()
     {
         $data = [
-            'someString' => 'some string',
+            'someString' => 'some string3',
             'simpleObject1' => [
-                'someString' => 'some string',
+                'someString' => 'some string1',
                 'someInt' => 1,
             ],
             'simpleObject2' => [
-                'someString' => 'some string',
+                'someString' => 'some string2',
                 'someInt' => 2,
                 'someObject' => [],
             ],
@@ -166,11 +166,13 @@ abstract class BuilderTest extends TestCase
         $object = static::$builder->build($class, $data);
 
         $this->assertInstanceOf(SomeAggregateRoot::class, $object);
-        $this->assertSame('some string', $object->someString);
+        $this->assertSame('some string3', $object->someString);
         $this->assertSame(3, $object->someInt);
         $this->assertInstanceOf(SimpleScalarConstructor::class, $object->simpleObject1);
         $this->assertInstanceOf(SimpleMixedConstructor::class, $object->simpleObject2);
         $this->assertSame(1, $object->simpleObject1->someInt);
+        $this->assertSame('some string1', $object->simpleObject1->someString);
         $this->assertSame(2, $object->simpleObject2->someInt);
+        $this->assertSame('some string2', $object->simpleObject2->someString);
     }
 }
