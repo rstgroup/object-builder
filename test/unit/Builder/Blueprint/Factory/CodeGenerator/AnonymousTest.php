@@ -112,7 +112,7 @@ return function(array $data) use ($class): object {
             }
             
             return $arr;
-        })($data));
+        })($data[\'list\']));
 }', $blueprint);
     }
 }

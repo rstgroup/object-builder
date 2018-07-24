@@ -23,6 +23,9 @@ final class ObjectList extends Node
             }
             
             return $arr;
-        })($data[\'' . $this->name() . '\'])', $this->objectNode);
+        })($data[\'%s\'])',
+            $this->objectNode,
+            $this->name()
+        );
     }
 }
