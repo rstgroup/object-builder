@@ -22,10 +22,23 @@ final class Complex extends Node
 
     public function __toString(): string
     {
+        $nodes = [];
+        foreach ($this->nodes as $node) {
+            if ($node instanceof Scalar) {
+                $nodeSerialized = (string) $node;
+                if (! empty($this->name())) {
+                    $nodeSerialized = '[\'' . $this->name() . '\']' . $nodeSerialized;
+                }
+                $nodes[] = '$data' . $nodeSerialized;
+                continue;
+            }
+
+            $nodes[] = (string) $node;
+        }
         return sprintf(
             'new %s(%s)',
             $this->type(),
-            implode(', ', $this->nodes)
+            implode(', ', $nodes)
         );
     }
 }

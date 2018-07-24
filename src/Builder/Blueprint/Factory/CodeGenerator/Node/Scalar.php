@@ -8,6 +8,6 @@ final class Scalar extends Node
 {
     public function __toString(): string
     {
-        return sprintf('$data[\'%s\']', $this->name);
+        return sprintf('[\'%s\']', $this->name);
     }
 }
