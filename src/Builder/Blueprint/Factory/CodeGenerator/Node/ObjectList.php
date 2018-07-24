@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
 
@@ -16,7 +16,8 @@ final class ObjectList extends Node
 
     public function __toString(): string
     {
-        return sprintf('(function (array $list) {
+        return sprintf(
+            '(function (array $list) {
             $arr = [];
             foreach ($list as $data) {
                 $arr[] = %s;

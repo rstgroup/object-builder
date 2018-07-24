@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
 
@@ -68,9 +68,11 @@ class PhpDocParser
     {
         $uses = [];
         foreach ($node->stmts as $node) {
-            if ($node instanceof Stmt\Use_) {
-                $uses[]= $node;
+            if (!($node instanceof Stmt\Use_)) {
+                continue;
             }
+
+            $uses[]= $node;
         }
 
         return $uses;
@@ -92,7 +94,7 @@ class PhpDocParser
 
     private function getFullClassName(string $name, array $namespaces, ReflectionClass $class): string
     {
-        if ($name[0] === '\\') {
+        if ('\\' === $name[0]) {
             return $name;
         }
 
@@ -122,6 +124,6 @@ class PhpDocParser
     {
         $length = strlen($needle);
 
-        return $length === 0 || (substr($haystack, -$length) === $needle);
+        return 0 === $length || (substr($haystack, -$length) === $needle);
     }
 }

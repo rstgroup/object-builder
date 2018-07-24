@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder;
 
@@ -113,10 +113,11 @@ final class Reflection implements Builder
                     $uses = $this->getUseStmts($namespace);
                     $namespaces = $this->getUsesNamespaces($uses);
 
-                    foreach($data as $objectConstructorData) {
+                    foreach ($data as $objectConstructorData) {
                         $list[] = $this->build(
                             $this->getFullClassName($type->name, $namespaces, $constructor->getDeclaringClass()),
-                            $objectConstructorData);
+                            $objectConstructorData
+                        );
                     }
 
                     return $list;
@@ -146,9 +147,11 @@ final class Reflection implements Builder
     {
         $uses = [];
         foreach ($node->stmts as $node) {
-            if ($node instanceof Stmt\Use_) {
-                $uses[]= $node;
+            if (!($node instanceof Stmt\Use_)) {
+                continue;
             }
+
+            $uses[]= $node;
         }
 
         return $uses;
@@ -170,7 +173,7 @@ final class Reflection implements Builder
 
     private function getFullClassName(string $name, array $namespaces, ReflectionClass $class): string
     {
-        if ($name[0] === '\\') {
+        if ('\\' === $name[0]) {
             return $name;
         }
 
@@ -200,6 +203,6 @@ final class Reflection implements Builder
     {
         $length = strlen($needle);
 
-        return $length === 0 || (substr($haystack, -$length) === $needle);
+        return 0 === $length || (substr($haystack, -$length) === $needle);
     }
 }

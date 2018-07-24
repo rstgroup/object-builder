@@ -1,9 +1,8 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\ParameterNameStrategy;
 
 use PHPUnit\Framework\TestCase;
-use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\SnakeCase;
 
 class SnakeCaseTest extends TestCase
@@ -11,7 +10,7 @@ class SnakeCaseTest extends TestCase
     /** @var SnakeCase */
     private static $strategy;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::$strategy = new SnakeCase();
     }
@@ -20,7 +19,7 @@ class SnakeCaseTest extends TestCase
      * @test
      * @dataProvider validStrings
      */
-    public function snakeCaseStrategyReturnTrueForStringsOnlyInSneakCaseFormat(string $string)
+    public function snakeCaseStrategyReturnTrueForStringsOnlyInSneakCaseFormat(string $string): void
     {
         $isFulfilled = static::$strategy->isFulfilled($string);
 
@@ -31,7 +30,7 @@ class SnakeCaseTest extends TestCase
      * @test
      * @dataProvider invalidStrings
      */
-    public function snakeCaseStrategyReturnFalseForStringsWitUnderscoreOrSpace(string $string)
+    public function snakeCaseStrategyReturnFalseForStringsWitUnderscoreOrSpace(string $string): void
     {
         $isFulfilled = static::$strategy->isFulfilled($string);
 
@@ -39,7 +38,7 @@ class SnakeCaseTest extends TestCase
     }
 
     /** @test */
-    public function snakeCaseStrategyReturnGivenParameterAsCamelCase()
+    public function snakeCaseStrategyReturnGivenParameterAsCamelCase(): void
     {
         $string = static::$strategy->getName('simple_snake_case');
 

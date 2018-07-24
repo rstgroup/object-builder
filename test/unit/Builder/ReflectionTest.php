@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder;
 
@@ -7,7 +7,7 @@ use RstGroup\ObjectBuilder\Builder\Reflection;
 
 class ReflectionTest extends BuilderTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::$builder = new Reflection(new Simple());
     }

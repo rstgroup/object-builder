@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
 
@@ -19,7 +19,7 @@ final class CodeGenerator implements Factory
         $blueprint = $this->generator->create($class);
         $prefix = '<?php';
 
-        if (substr($blueprint, 0, strlen($prefix)) == $prefix) {
+        if (substr($blueprint, 0, strlen($prefix)) === $prefix) {
             $blueprint = substr($blueprint, strlen($prefix));
         }
 

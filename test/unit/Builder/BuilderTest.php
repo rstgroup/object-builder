@@ -1,11 +1,9 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder;
 
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder;
-use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
-use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithUseStmtConstructor;
@@ -23,7 +21,7 @@ abstract class BuilderTest extends TestCase
     protected static $builder;
 
     /** @test */
-    public function iCanBuildSimpleObjectWithScalarValuesInConstructor()
+    public function iCanBuildSimpleObjectWithScalarValuesInConstructor(): void
     {
         $data = [
             'someString' => 'some string',
@@ -40,7 +38,7 @@ abstract class BuilderTest extends TestCase
     }
 
     /** @test */
-    public function iCanBuildSimpleObjectWithScalarAndObjectValuesInConstructor()
+    public function iCanBuildSimpleObjectWithScalarAndObjectValuesInConstructor(): void
     {
         $data = [
             'someString' => 'some string',
@@ -59,7 +57,7 @@ abstract class BuilderTest extends TestCase
     }
 
     /** @test */
-    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor()
+    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor(): void
     {
         $data = [
             'someObject' => [],
@@ -76,7 +74,7 @@ abstract class BuilderTest extends TestCase
     }
 
     /** @test */
-    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor()
+    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor(): void
     {
         $data = [
             'list' => [
@@ -97,13 +95,13 @@ abstract class BuilderTest extends TestCase
 
         $this->assertInstanceOf(ListOfObjectsWithoutUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
-        foreach($object->list as $element) {
+        foreach ($object->list as $element) {
             $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
         }
     }
 
     /** @test */
-    public function iCanBuildObjectWithObjectCollectionWithUseInConstructor()
+    public function iCanBuildObjectWithObjectCollectionWithUseInConstructor(): void
     {
         $data = [
             'list' => [
@@ -118,13 +116,13 @@ abstract class BuilderTest extends TestCase
 
         $this->assertInstanceOf(ListOfObjectsWithUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
-        foreach($object->list as $element) {
+        foreach ($object->list as $element) {
             $this->assertInstanceOf(SomeSecondObject::class, $element);
         }
     }
 
     /** @test */
-    public function iCanBuildObjectWithObjectCollectionWithoutUseButWithFQNTypedArrayInConstructor()
+    public function iCanBuildObjectWithObjectCollectionWithoutUseButWithFQNTypedArrayInConstructor(): void
     {
         $data = [
             'list' => [
@@ -139,13 +137,13 @@ abstract class BuilderTest extends TestCase
 
         $this->assertInstanceOf(ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor::class, $object);
         $this->assertCount(2, $object->list);
-        foreach($object->list as $element) {
+        foreach ($object->list as $element) {
             $this->assertInstanceOf(SomeObject::class, $element);
         }
     }
 
     /** @test */
-    public function iCanBuildAdvancedObjectHierarchy()
+    public function iCanBuildAdvancedObjectHierarchy(): void
     {
         $data = [
             'someString' => 'some string3',

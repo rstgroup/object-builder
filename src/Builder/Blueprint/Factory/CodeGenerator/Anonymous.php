@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
 
@@ -11,14 +11,14 @@ use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Scalar;
 final class Anonymous
 {
     private const FILE_BEGIN_WITH =
-"<?php\n";
+    "<?php\n";
     private const DEFAULT_VALUES_PATTERN =
-'    $default = %s;'
-. "\n"
-. '    $data = array_merge($default, $data);'
-. "\n";
+    '    $default = %s;'
+    . "\n"
+    . '    $data = array_merge($default, $data);'
+    . "\n";
     private const FUNCTION_PATTERN =
-'function(array $data) use ($class): object {
+    'function(array $data) use ($class): object {
 %s
     return %s;
 }';
@@ -86,7 +86,7 @@ final class Anonymous
     {
         $type = $parameter->getType()->getName();
 
-        if ($type === 'array'
+        if ('array' === $type
             && $this->phpDocParser->isListOfObject($phpDoc, $parameter)) {
             $class = $this->phpDocParser->getListType($phpDoc, $parameter);
 
@@ -127,9 +127,11 @@ final class Anonymous
         if ($node instanceof Complex) {
             foreach ($node->innerNodes() as $innerNode) {
                 $innerNodeDefaultValues = $this->getDefaultValues($innerNode);
-                if(! empty($innerNodeDefaultValues)) {
-                    $values[$innerNode->name()] = $innerNodeDefaultValues;
+                if (empty($innerNodeDefaultValues)) {
+                    continue;
                 }
+
+                $values[$innerNode->name()] = $innerNodeDefaultValues;
             }
         }
 

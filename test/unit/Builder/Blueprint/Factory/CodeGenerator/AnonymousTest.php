@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\Blueprint\Factory\CodeGenerator;
 
@@ -21,7 +21,7 @@ class AnonymousTest extends TestCase
         $blueprint = $factory->create($class);
 
         $this->assertSame(
-'<?php
+            '<?php
 
 return function(array $data) use ($class): object {
 
@@ -51,7 +51,7 @@ return function(array $data) use ($class): object {
     }
 
     /** @test */
-    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor()
+    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor(): void
     {
         $factory = new Anonymous();
         $class = SimpleMixedConstructorWithDefaultValue::class;
@@ -75,7 +75,7 @@ return function(array $data) use ($class): object {
     }
 
     /** @test */
-    public function iCanBuildAdvancedObjectHierarchy()
+    public function iCanBuildAdvancedObjectHierarchy(): void
     {
         $factory = new Anonymous();
         $class = SomeAggregateRoot::class;
@@ -94,7 +94,7 @@ return function(array $data) use ($class): object {
     }
 
     /** @test */
-    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor()
+    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor(): void
     {
         $factory = new Anonymous();
         $class = ListOfObjectsWithoutUseStmtConstructor::class;

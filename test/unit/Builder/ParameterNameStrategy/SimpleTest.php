@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\ParameterNameStrategy;
 
@@ -10,7 +10,7 @@ class SimpleTest extends TestCase
     /** @var Simple */
     private static $strategy;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::$strategy = new Simple();
     }
@@ -19,7 +19,7 @@ class SimpleTest extends TestCase
      * @test
      * @dataProvider validStrings
      */
-    public function simpleStrategyReturnTrueForStringsWithoutUnderscoreMinusAndSpace(string $string)
+    public function simpleStrategyReturnTrueForStringsWithoutUnderscoreMinusAndSpace(string $string): void
     {
         $isFulfilled = static::$strategy->isFulfilled($string);
 
@@ -30,7 +30,7 @@ class SimpleTest extends TestCase
      * @test
      * @dataProvider invalidStrings
      */
-    public function simpleStrategyReturnFalseForStringsWitUnderscoreOrMinusOrSpace(string $string)
+    public function simpleStrategyReturnFalseForStringsWitUnderscoreOrMinusOrSpace(string $string): void
     {
         $isFulfilled = static::$strategy->isFulfilled($string);
 
@@ -38,7 +38,7 @@ class SimpleTest extends TestCase
     }
 
     /** @test */
-    public function simpleStrategyReturnGivenParameterWithoutModification()
+    public function simpleStrategyReturnGivenParameterWithoutModification(): void
     {
         $string = static::$strategy->getName('simpleCamelCase');
 
