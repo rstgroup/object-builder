@@ -3,7 +3,8 @@
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\Blueprint\Factory\CodeGenerator;
 
 use PHPUnit\Framework\TestCase;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Anonymous;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous;
+use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
@@ -15,7 +16,7 @@ class AnonymousTest extends TestCase
     /** @test */
     public function iCanGenerateSimpleObjectClosure(): void
     {
-        $factory = new Anonymous();
+        $factory = new Anonymous(new PhpStan());
         $class = SomeObjectWithEmptyConstructor::class;
 
         $blueprint = $factory->create($class);
@@ -34,7 +35,7 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildSimpleObjectWithScalarValuesInConstructor(): void
     {
-        $factory = new Anonymous();
+        $factory = new Anonymous(new PhpStan());
         $class = SimpleScalarConstructor::class;
 
         $blueprint = $factory->create($class);
@@ -55,7 +56,7 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildSimpleObjectWithDefaultValuesInConstructor(): void
     {
-        $factory = new Anonymous();
+        $factory = new Anonymous(new PhpStan());
         $class = SimpleMixedConstructorWithDefaultValue::class;
 
         $blueprint = $factory->create($class);
@@ -81,7 +82,7 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildAdvancedObjectHierarchy(): void
     {
-        $factory = new Anonymous();
+        $factory = new Anonymous(new PhpStan());
         $class = SomeAggregateRoot::class;
 
         $blueprint = $factory->create($class);
@@ -102,7 +103,7 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor(): void
     {
-        $factory = new Anonymous();
+        $factory = new Anonymous(new PhpStan());
         $class = ListOfObjectsWithoutUseStmtConstructor::class;
 
         $blueprint = $factory->create($class);

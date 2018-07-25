@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
+namespace RstGroup\ObjectBuilder\PhpDocParser;
 
 use PhpParser\Node\Stmt;
 use PHPStan\PhpDocParser\Lexer\Lexer;
@@ -12,8 +12,9 @@ use ReflectionClass;
 use ReflectionParameter;
 use Roave\BetterReflection\BetterReflection;
 use RstGroup\ObjectBuilder\BuildingError;
+use RstGroup\ObjectBuilder\PhpDocParser;
 
-class PhpDocParser
+final class PhpStan implements PhpDocParser
 {
     public function isListOfObject(string $comment, ReflectionParameter $parameter): bool
     {

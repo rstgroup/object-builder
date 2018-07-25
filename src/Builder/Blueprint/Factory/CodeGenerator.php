@@ -3,15 +3,16 @@
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
 
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
 
 final class CodeGenerator implements Factory
 {
-    /** @var Factory\CodeGenerator\Anonymous */
+    /** @var PatternGenerator */
     private $generator;
 
-    public function __construct()
+    public function __construct(PatternGenerator $generator)
     {
-        $this->generator = new Factory\CodeGenerator\Anonymous();
+        $this->generator = $generator;
     }
 
     public function create(string $class): callable

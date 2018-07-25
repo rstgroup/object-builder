@@ -1,14 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
+namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
 
 use ReflectionClass;
 use ReflectionMethod;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Complex;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\ObjectList;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Scalar;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
+use RstGroup\ObjectBuilder\PhpDocParser;
 
-final class Anonymous
+final class Anonymous implements PatternGenerator
 {
     private const FILE_BEGIN_WITH =
     "<?php\n";
@@ -26,9 +29,9 @@ final class Anonymous
     /** @var PhpDocParser */
     private $phpDocParser;
 
-    public function __construct()
+    public function __construct(PhpDocParser $parser)
     {
-        $this->phpDocParser = new PhpDocParser();
+        $this->phpDocParser = $parser;
     }
 
     public function create(string $class): string
