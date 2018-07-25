@@ -6,6 +6,7 @@ use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
 
 final class ObjectList extends Node
 {
+    /** @var Node */
     private $objectNode;
 
     public function __construct(string $name, Node $objectNode)

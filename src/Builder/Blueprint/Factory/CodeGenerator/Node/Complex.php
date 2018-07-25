@@ -6,7 +6,7 @@ use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
 
 final class Complex extends Node
 {
-    /** @var Node */
+    /** @var Node[] */
     private $nodes = [];
 
     public function add(Node $node): void
@@ -26,7 +26,7 @@ final class Complex extends Node
         foreach ($this->nodes as $node) {
             if ($node instanceof Scalar) {
                 $nodeSerialized = (string) $node;
-                if (! empty($this->name())) {
+                if ('' !== $this->name()) {
                     $nodeSerialized = '[\'' . $this->name() . '\']' . $nodeSerialized;
                 }
                 $nodes[] = '$data' . $nodeSerialized;

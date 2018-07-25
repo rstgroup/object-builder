@@ -11,7 +11,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionParameter;
 use Roave\BetterReflection\BetterReflection;
-use RstGroup\ObjectBuilder\BuilderException;
+use RstGroup\ObjectBuilder\BuildingError;
 
 class PhpDocParser
 {
@@ -39,12 +39,20 @@ class PhpDocParser
                 $type = $node->type->type;
                 $parser = (new BetterReflection())->phpParser();
 
-                $parsedFile = $parser->parse(file_get_contents($parameter->getDeclaringClass()->getFileName()));
+                /** @var ReflectionClass $class */
+                $class = $parameter->getDeclaringClass();
+                /** @var string $fileName */
+                $fileName = $class->getFileName();
+                /** @var string $phpFileContent */
+                $phpFileContent = file_get_contents($fileName);
+                /** @var Stmt[] $parsedFile */
+                $parsedFile = $parser->parse($phpFileContent);
+
                 $namespace = $this->getNamespaceStmt($parsedFile);
                 $uses = $this->getUseStmts($namespace);
                 $namespaces = $this->getUsesNamespaces($uses);
 
-                return $this->getFullClassName($type->name, $namespaces, $parameter->getDeclaringClass());
+                return $this->getFullClassName($type->name, $namespaces, $class);
             }
         }
     }
@@ -66,16 +74,9 @@ class PhpDocParser
     /** @return Stmt\Use_[] */
     private function getUseStmts(Stmt\Namespace_ $node): array
     {
-        $uses = [];
-        foreach ($node->stmts as $node) {
-            if (!($node instanceof Stmt\Use_)) {
-                continue;
-            }
-
-            $uses[]= $node;
-        }
-
-        return $uses;
+        return array_filter($node->stmts, function (Stmt $node): bool {
+            return $node instanceof Stmt\Use_;
+        });
     }
 
     /**
@@ -84,14 +85,12 @@ class PhpDocParser
      */
     private function getUsesNamespaces(array $uses): array
     {
-        $names = [];
-        foreach ($uses as $use) {
-            $names[] = $use->uses[0]->name->toString();
-        }
-
-        return $names;
+        return array_map(function (Stmt\Use_ $use): string {
+            return $use->uses[0]->name->toString();
+        }, $uses);
     }
 
+    /** @param string[] $namespaces */
     private function getFullClassName(string $name, array $namespaces, ReflectionClass $class): string
     {
         if ('\\' === $name[0]) {
@@ -107,7 +106,7 @@ class PhpDocParser
 
     /**
      * @param string[] $namespaces
-     * @throws BuilderException
+     * @throws BuildingError
      */
     private function getNamespaceForClass(string $className, array $namespaces): string
     {
@@ -117,7 +116,7 @@ class PhpDocParser
             }
         }
 
-        throw new BuilderException('Can not resolve namespace for class ' . $className);
+        throw new BuildingError('Can not resolve namespace for class ' . $className);
     }
 
     private function endsWith(string $haystack, string $needle): bool

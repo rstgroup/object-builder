@@ -4,6 +4,6 @@ namespace RstGroup\ObjectBuilder;
 
 use Exception;
 
-final class BuilderException extends Exception
+final class BuildingError extends Exception
 {
 }

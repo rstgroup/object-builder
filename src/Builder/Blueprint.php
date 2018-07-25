@@ -6,6 +6,7 @@ use RstGroup\ObjectBuilder\Builder;
 
 final class Blueprint implements Builder
 {
+    /** @var Builder\Blueprint\Factory */
     private $blueprintFactory;
 
     public function __construct(Builder\Blueprint\Factory $factory)
@@ -13,6 +14,7 @@ final class Blueprint implements Builder
         $this->blueprintFactory = $factory;
     }
 
+    /** @param mixed[] $data */
     public function build(string $class, array $data): object
     {
         $blueprint = $this->blueprintFactory->create($class);

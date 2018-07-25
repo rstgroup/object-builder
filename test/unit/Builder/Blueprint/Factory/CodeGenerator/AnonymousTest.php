@@ -39,6 +39,7 @@ return function(array $data) use ($class): object {
 
         $blueprint = $factory->create($class);
 
+// @codingStandardsIgnoreStart
         $this->assertSame(
             '<?php
 
@@ -48,6 +49,7 @@ return function(array $data) use ($class): object {
 }',
             $blueprint
         );
+// @codingStandardsIgnoreEnd
     }
 
     /** @test */
@@ -58,6 +60,7 @@ return function(array $data) use ($class): object {
 
         $blueprint = $factory->create($class);
 
+// @codingStandardsIgnoreStart
         $this->assertSame(
             '<?php
 
@@ -72,6 +75,7 @@ return function(array $data) use ($class): object {
 }',
             $blueprint
         );
+// @codingStandardsIgnoreEnd
     }
 
     /** @test */
@@ -82,6 +86,7 @@ return function(array $data) use ($class): object {
 
         $blueprint = $factory->create($class);
 
+// @codingStandardsIgnoreStart
         $this->assertSame(
             '<?php
 
@@ -91,6 +96,7 @@ return function(array $data) use ($class): object {
 }',
             $blueprint
         );
+// @codingStandardsIgnoreEnd
     }
 
     /** @test */
@@ -101,6 +107,7 @@ return function(array $data) use ($class): object {
 
         $blueprint = $factory->create($class);
 
+// @codingStandardsIgnoreStart
         $this->assertSame('<?php
 
 return function(array $data) use ($class): object {
@@ -113,6 +120,9 @@ return function(array $data) use ($class): object {
             
             return $arr;
         })($data[\'list\']));
-}', $blueprint);
+}',
+            $blueprint
+        );
+// @codingStandardsIgnoreEnd
     }
 }

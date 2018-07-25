@@ -36,8 +36,7 @@
     "test:unit": "phpunit -c phpunit.xml --testsuite unit --colors=always ",
     "test:unit:coverage": "phpunit -c phpunit.xml --testsuite unit --coverage-php test/result/unit.cov --colors=never",
     "cs:phpstan": [
-      "phpstan analyse --level=max --ansi --no-progress -c phpstan.neon src",
-      "phpstan analyse --level=max --ansi --no-progress -c phpstan-test.neon test"
+      "phpstan analyse --level=max --ansi --no-progress -c phpstan.neon src"
     ],
     "cs:phpcs": [
       "phpcs --standard=ruleset.xml --extensions=php -v --ignore=.config.php src test --cache=.phpcs.cache"

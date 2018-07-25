@@ -17,7 +17,7 @@
         <properties>
             <property name="rootNamespaces" type="array" value="
                 src=>RstGroup\ObjectBuilder,
-                test=>RstGroup\ObjectBuilder\Test\,
+                test=>RstGroup\ObjectBuilder\Test,
             "/>
         </properties>
     </rule>

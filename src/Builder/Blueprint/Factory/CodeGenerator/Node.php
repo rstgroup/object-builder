@@ -4,10 +4,14 @@ namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
 
 abstract class Node
 {
+    /** @var string */
     protected $name;
+    /** @var mixed|null */
     private $defaultValue;
+    /** @var string */
     private $type;
 
+    /** @param mixed $defaultValue */
     public function __construct(string $type, string $name, $defaultValue = null)
     {
         $this->name = $name;
@@ -30,6 +34,7 @@ abstract class Node
         return null !== $this->defaultValue;
     }
 
+    /** @return mixed */
     public function defaultValue()
     {
         return $this->defaultValue;

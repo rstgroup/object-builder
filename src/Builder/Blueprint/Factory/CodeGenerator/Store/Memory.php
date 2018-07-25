@@ -7,9 +7,10 @@ use Throwable;
 
 final class Memory implements Store
 {
+    /** @var string[] */
     private $store = [];
 
-    public function get(string $class): callable
+    public function get(string $class): ?callable
     {
         try {
             return eval($this->store[$class]);

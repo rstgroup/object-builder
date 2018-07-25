@@ -67,12 +67,11 @@ final class Anonymous
             $class = $parameter->getClass();
 
             if (null === $class) {
-                $node->add(
-                    $this->createNode(
-                        $parameter,
-                        $method->getDocComment() ? $method->getDocComment() : ''
-                    )
-                );
+                $comment = (bool) $method->getDocComment()
+                    ? (string) $method->getDocComment()
+                    : '';
+                $node->add($this->createNode($parameter, $comment));
+
                 continue;
             }
 
@@ -109,7 +108,7 @@ final class Anonymous
     {
         $defaultSection = '';
         $defaultValues = $this->getDefaultValues($node);
-        if (! empty($defaultValues)) {
+        if ([] !== $defaultValues) {
             $defaultSection = sprintf(
                 self::DEFAULT_VALUES_PATTERN,
                 var_export($defaultValues, true)
@@ -127,7 +126,7 @@ final class Anonymous
         if ($node instanceof Complex) {
             foreach ($node->innerNodes() as $innerNode) {
                 $innerNodeDefaultValues = $this->getDefaultValues($innerNode);
-                if (empty($innerNodeDefaultValues)) {
+                if ([] === $innerNodeDefaultValues) {
                     continue;
                 }
 
