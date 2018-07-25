@@ -30,34 +30,31 @@
     "sort-packages": true
   },
   "scripts": {
-    "check": [
-      "@test"
-    ],
-    "test:unit": "phpunit -c phpunit.xml --testsuite unit --colors=always ",
-    "test:unit:coverage": "phpunit -c phpunit.xml --testsuite unit --coverage-php test/result/unit.cov --colors=never",
-    "cs:phpstan": [
+    "test-unit": "phpunit -c phpunit.xml --testsuite unit --colors=always ",
+    "test-unit-coverage": "phpunit -c phpunit.xml --testsuite unit --coverage-php test/result/unit.cov --colors=never",
+    "cs-phpstan": [
       "phpstan analyse --level=max --ansi --no-progress -c phpstan.neon src"
     ],
-    "cs:phpcs": [
+    "cs-phpcs": [
       "phpcs --standard=ruleset.xml --extensions=php -v --ignore=.config.php src test --cache=.phpcs.cache"
     ],
-    "cs:phpcs-fix": [
+    "cs-phpcs-fix": [
       "phpcbf --standard=ruleset.xml --extensions=php --ignore=.config.php src test --cache=.phpcs.cache"
     ],
-    "cs:php-cs-fixer": [
+    "cs-php-cs-fixer": [
       "php-cs-fixer fix src --allow-risky yes --diff --show-progress dots --verbose --dry-run"
     ],
-    "cs:php-cs-fixer-fix": [
+    "cs-php-cs-fixer-fix": [
       "php-cs-fixer fix src --allow-risky yes --diff --show-progress dots --verbose"
     ],
-    "cs:check": [
-      "@cs:phpcs",
-      "@cs:php-cs-fixer",
-      "@cs:phpstan"
+    "cs-check": [
+      "@cs-phpcs",
+      "@cs-php-cs-fixer",
+      "@cs-phpstan"
     ],
-    "cs:fix": [
-      "@cs:phpcs-fix",
-      "@cs:php-cs-fixer-fix"
+    "cs-fix": [
+      "@cs-phpcs-fix",
+      "@cs-php-cs-fixer-fix"
     ]
   }
 }

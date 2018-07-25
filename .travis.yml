@@ -30,8 +30,8 @@ install:
   - stty cols 120 && composer show
 
 script:
-  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test:unit:coverage ; else composer test ; fi
-  - if [[ $CS_CHECK == 'true' ]]; then composer cs:check ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-unit-coverage ; else composer test ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then vendor/bin/php-coveralls -v ; fi
