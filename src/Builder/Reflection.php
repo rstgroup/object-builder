@@ -2,7 +2,9 @@
 
 namespace RstGroup\ObjectBuilder\Builder;
 
+use PhpParser\Lexer\Emulative;
 use PhpParser\Node\Stmt;
+use PhpParser\ParserFactory;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -11,7 +13,6 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
-use Roave\BetterReflection\BetterReflection;
 use RstGroup\ObjectBuilder\Builder;
 use RstGroup\ObjectBuilder\BuildingError;
 use Throwable;
@@ -118,7 +119,18 @@ final class Reflection implements Builder
                 if ($node->parameterName === '$' . $parameter->getName()) {
                     $type = $node->type->type;
                     $list = [];
-                    $parser = (new BetterReflection())->phpParser();
+                    $parser = (new ParserFactory())->create(
+                        ParserFactory::PREFER_PHP7,
+                        new Emulative([
+                            'usedAttributes' => [
+                                'comments',
+                                'startLine',
+                                'endLine',
+                                'startFilePos',
+                                'endFilePos'
+                            ],
+                        ])
+                    );
 
                     /** @var ReflectionClass $class */
                     $class = $parameter->getDeclaringClass();
