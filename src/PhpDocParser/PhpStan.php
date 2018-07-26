@@ -3,23 +3,31 @@
 namespace RstGroup\ObjectBuilder\PhpDocParser;
 
 use PhpParser\Node\Stmt;
+use PhpParser\Parser;
 use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser as PhpStanPhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
-use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionParameter;
-use Roave\BetterReflection\BetterReflection;
 use RstGroup\ObjectBuilder\BuildingError;
 use RstGroup\ObjectBuilder\PhpDocParser;
 
 final class PhpStan implements PhpDocParser
 {
+    private $phpDocParser;
+    private $phpParser;
+
+    public function __construct(
+        PhpStanPhpDocParser $phpDocParser,
+        Parser $phpParser
+    ) {
+        $this->phpDocParser = $phpDocParser;
+        $this->phpParser = $phpParser;
+    }
+
     public function isListOfObject(string $comment, ReflectionParameter $parameter): bool
     {
-        $parser = new PhpStanPhpDocParser(new TypeParser(), new ConstExprParser());
-        $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
+        $node = $this->phpDocParser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
 
         foreach ($node->getParamTagValues() as $node) {
             if ($node->parameterName === '$' . $parameter->getName()) {
@@ -32,13 +40,11 @@ final class PhpStan implements PhpDocParser
 
     public function getListType(string $comment, ReflectionParameter $parameter): string
     {
-        $parser = new PhpStanPhpDocParser(new TypeParser(), new ConstExprParser());
-        $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
+        $node = $this->phpDocParser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
 
         foreach ($node->getParamTagValues() as $node) {
             if ($node->parameterName === '$' . $parameter->getName()) {
                 $type = $node->type->type;
-                $parser = (new BetterReflection())->phpParser();
 
                 /** @var ReflectionClass $class */
                 $class = $parameter->getDeclaringClass();
@@ -47,7 +53,7 @@ final class PhpStan implements PhpDocParser
                 /** @var string $phpFileContent */
                 $phpFileContent = file_get_contents($fileName);
                 /** @var Stmt[] $parsedFile */
-                $parsedFile = $parser->parse($phpFileContent);
+                $parsedFile = $this->phpParser->parse($phpFileContent);
 
                 $namespace = $this->getNamespaceStmt($parsedFile);
                 $uses = $this->getUseStmts($namespace);

@@ -2,6 +2,11 @@
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\Blueprint\Factory\CodeGenerator;
 
+use PhpParser\Lexer\Emulative;
+use PhpParser\ParserFactory;
+use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
@@ -13,13 +18,30 @@ use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
 
 class AnonymousTest extends TestCase
 {
+    /** @var Anonymous */
+    private static $factory;
+
+    public static function setUpBeforeClass()
+    {
+        self::$factory = new Anonymous(
+            new PhpStan(
+                new PhpDocParser(
+                    new TypeParser(),
+                    new ConstExprParser()
+                ),
+                (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Emulative([
+                    'usedAttributes' => ['comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'],
+                ]))
+            )
+        );
+    }
+
     /** @test */
     public function iCanGenerateSimpleObjectClosure(): void
     {
-        $factory = new Anonymous(new PhpStan());
         $class = SomeObjectWithEmptyConstructor::class;
 
-        $blueprint = $factory->create($class);
+        $blueprint = self::$factory->create($class);
 
         $this->assertSame(
             '<?php
@@ -35,10 +57,9 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildSimpleObjectWithScalarValuesInConstructor(): void
     {
-        $factory = new Anonymous(new PhpStan());
         $class = SimpleScalarConstructor::class;
 
-        $blueprint = $factory->create($class);
+        $blueprint = self::$factory->create($class);
 
 // @codingStandardsIgnoreStart
         $this->assertSame(
@@ -56,10 +77,9 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildSimpleObjectWithDefaultValuesInConstructor(): void
     {
-        $factory = new Anonymous(new PhpStan());
         $class = SimpleMixedConstructorWithDefaultValue::class;
 
-        $blueprint = $factory->create($class);
+        $blueprint = self::$factory->create($class);
 
 // @codingStandardsIgnoreStart
         $this->assertSame(
@@ -82,10 +102,9 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildAdvancedObjectHierarchy(): void
     {
-        $factory = new Anonymous(new PhpStan());
         $class = SomeAggregateRoot::class;
 
-        $blueprint = $factory->create($class);
+        $blueprint = self::$factory->create($class);
 
 // @codingStandardsIgnoreStart
         $this->assertSame(
@@ -103,10 +122,9 @@ return function(array $data) use ($class): object {
     /** @test */
     public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor(): void
     {
-        $factory = new Anonymous(new PhpStan());
         $class = ListOfObjectsWithoutUseStmtConstructor::class;
 
-        $blueprint = $factory->create($class);
+        $blueprint = self::$factory->create($class);
 
 // @codingStandardsIgnoreStart
         $this->assertSame('<?php
