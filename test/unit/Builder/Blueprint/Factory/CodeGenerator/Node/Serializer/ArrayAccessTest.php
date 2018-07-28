@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer;
 
@@ -13,13 +13,13 @@ class ArrayAccessTest extends TestCase
     /** @var ArrayAccess */
     private static $serializer;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         static::$serializer = new ArrayAccess();
     }
 
     /** @test */
-    public function serializeScalarNodeToArrayAccessStringWithNodeName()
+    public function serializeScalarNodeToArrayAccessStringWithNodeName(): void
     {
         $node = new Scalar('string', 'someName');
 
@@ -29,7 +29,7 @@ class ArrayAccessTest extends TestCase
     }
 
     /** @test */
-    public function serializeComplexNodeToArrayAccessString()
+    public function serializeComplexNodeToArrayAccessString(): void
     {
         $node = new Complex('SomeClassName', 'someName');
         $scalarStringNode = new Scalar('string', 'someStringName');
@@ -46,7 +46,7 @@ class ArrayAccessTest extends TestCase
     }
 
     /** @test */
-    public function serializeObjectListNodeToArrayAccessString()
+    public function serializeObjectListNodeToArrayAccessString(): void
     {
         $objectNode = new Complex('SomeClassName', 'someName');
         $scalarStringNode = new Scalar('string', 'someStringName');
@@ -58,7 +58,7 @@ class ArrayAccessTest extends TestCase
         $serializedNode = static::$serializer->serialize($node);
 
         $this->assertSame(
-    '(function (array $list) {
+            '(function (array $list) {
         $arr = [];
         foreach ($list as $data) {
             $arr[] = new SomeClassName($data[\'someName\'][\'someStringName\'], $data[\'someName\'][\'someInt\']);

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer;
 
@@ -11,7 +11,7 @@ final class ArrayAccess implements Serializer
     private const SCALAR_PATTERN = '[\'%s\']';
     private const COMPLEX_PATTERN = 'new %s(%s)';
     private const OBJECT_LIST_PATTERN =
-'(function (array $list) {
+    '(function (array $list) {
         $arr = [];
         foreach ($list as $data) {
             $arr[] = %s;
