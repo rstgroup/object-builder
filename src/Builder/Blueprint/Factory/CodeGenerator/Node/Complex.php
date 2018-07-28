@@ -15,30 +15,8 @@ final class Complex extends Node
     }
 
     /** @return Node[] */
-    public function innerNodes(): array
+    public function innerNodes(): iterable
     {
         return $this->nodes;
-    }
-
-    public function __toString(): string
-    {
-        $nodes = [];
-        foreach ($this->nodes as $node) {
-            if ($node instanceof Scalar) {
-                $nodeSerialized = (string) $node;
-                if ('' !== $this->name()) {
-                    $nodeSerialized = '[\'' . $this->name() . '\']' . $nodeSerialized;
-                }
-                $nodes[] = '$data' . $nodeSerialized;
-                continue;
-            }
-
-            $nodes[] = (string) $node;
-        }
-        return sprintf(
-            'new %s(%s)',
-            $this->type(),
-            implode(', ', $nodes)
-        );
     }
 }

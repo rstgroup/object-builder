@@ -8,6 +8,7 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPUnit\Framework\TestCase;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
@@ -32,7 +33,8 @@ class AnonymousTest extends TestCase
                 (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Emulative([
                     'usedAttributes' => ['comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'],
                 ]))
-            )
+            ),
+            new ArrayAccess()
         );
     }
 
@@ -122,13 +124,13 @@ class AnonymousTest extends TestCase
         $this->assertSame('return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor((function (array $list) {
-            $arr = [];
-            foreach ($list as $data) {
-                $arr[] = new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
-            }
-            
-            return $arr;
-        })($data[\'list\']));
+        $arr = [];
+        foreach ($list as $data) {
+            $arr[] = new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
+        }
+        
+        return $arr;
+    })($data[\'list\']));
 };',
             $blueprint
         );

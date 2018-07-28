@@ -24,10 +24,15 @@ final class Anonymous implements PatternGenerator
 
     /** @var PhpDocParser */
     private $phpDocParser;
+    /** @var Node\Serializer */
+    private $serializer;
 
-    public function __construct(PhpDocParser $parser)
-    {
+    public function __construct(
+        PhpDocParser $parser,
+        Node\Serializer $serializer
+    ) {
         $this->phpDocParser = $parser;
+        $this->serializer = $serializer;
     }
 
     public function create(string $class): string
@@ -39,7 +44,7 @@ final class Anonymous implements PatternGenerator
         return sprintf(
             self::FUNCTION_PATTERN,
             $this->getDefaultSection($node),
-            $node
+            $this->serializer->serialize($node)
         );
     }
 

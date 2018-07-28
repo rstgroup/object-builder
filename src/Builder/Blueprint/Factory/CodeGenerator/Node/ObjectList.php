@@ -15,19 +15,8 @@ final class ObjectList extends Node
         $this->objectNode = $objectNode;
     }
 
-    public function __toString(): string
+    public function objectNode(): Node
     {
-        return sprintf(
-            '(function (array $list) {
-            $arr = [];
-            foreach ($list as $data) {
-                $arr[] = %s;
-            }
-            
-            return $arr;
-        })($data[\'%s\'])',
-            $this->objectNode,
-            $this->name()
-        );
+        return $this->objectNode;
     }
 }

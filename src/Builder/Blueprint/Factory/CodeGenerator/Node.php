@@ -39,6 +39,4 @@ abstract class Node
     {
         return $this->defaultValue;
     }
-
-    abstract public function __toString(): string;
 }

@@ -25,7 +25,8 @@ class BlueprintTest extends BuilderTest
                         (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Emulative([
                             'usedAttributes' => ['comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'],
                         ]))
-                    )
+                    ),
+                    new Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess()
                 )
             )
         );
