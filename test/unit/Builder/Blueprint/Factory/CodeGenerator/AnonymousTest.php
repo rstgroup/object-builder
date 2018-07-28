@@ -21,7 +21,7 @@ class AnonymousTest extends TestCase
     /** @var Anonymous */
     private static $factory;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$factory = new Anonymous(
             new PhpStan(
@@ -44,12 +44,10 @@ class AnonymousTest extends TestCase
         $blueprint = self::$factory->create($class);
 
         $this->assertSame(
-            '<?php
-
-return function(array $data) use ($class): object {
+            'return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor();
-}',
+};',
             $blueprint
         );
     }
@@ -63,12 +61,10 @@ return function(array $data) use ($class): object {
 
 // @codingStandardsIgnoreStart
         $this->assertSame(
-            '<?php
-
-return function(array $data) use ($class): object {
+            'return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
-}',
+};',
             $blueprint
         );
 // @codingStandardsIgnoreEnd
@@ -83,9 +79,7 @@ return function(array $data) use ($class): object {
 
 // @codingStandardsIgnoreStart
         $this->assertSame(
-            '<?php
-
-return function(array $data) use ($class): object {
+            'return function(array $data) use ($class): object {
     $default = array (
   \'someString\' => \'some string\',
   \'someInt\' => 999,
@@ -93,7 +87,7 @@ return function(array $data) use ($class): object {
     $data = array_merge($default, $data);
 
     return new RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue(new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor(), $data[\'someString\'], $data[\'someInt\']);
-}',
+};',
             $blueprint
         );
 // @codingStandardsIgnoreEnd
@@ -108,12 +102,10 @@ return function(array $data) use ($class): object {
 
 // @codingStandardsIgnoreStart
         $this->assertSame(
-            '<?php
-
-return function(array $data) use ($class): object {
+            'return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\SomeAggregateRoot($data[\'someString\'], new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'simpleObject1\'][\'someString\'], $data[\'simpleObject1\'][\'someInt\']), new RstGroup\ObjectBuilder\Test\SimpleMixedConstructor($data[\'simpleObject2\'][\'someString\'], $data[\'simpleObject2\'][\'someInt\'], new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor()), $data[\'someInt\']);
-}',
+};',
             $blueprint
         );
 // @codingStandardsIgnoreEnd
@@ -127,9 +119,7 @@ return function(array $data) use ($class): object {
         $blueprint = self::$factory->create($class);
 
 // @codingStandardsIgnoreStart
-        $this->assertSame('<?php
-
-return function(array $data) use ($class): object {
+        $this->assertSame('return function(array $data) use ($class): object {
 
     return new RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor((function (array $list) {
             $arr = [];
@@ -139,7 +129,7 @@ return function(array $data) use ($class): object {
             
             return $arr;
         })($data[\'list\']));
-}',
+};',
             $blueprint
         );
 // @codingStandardsIgnoreEnd

@@ -5,26 +5,22 @@ namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern
 use ReflectionClass;
 use ReflectionMethod;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Complex;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\ObjectList;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Scalar;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
 use RstGroup\ObjectBuilder\PhpDocParser;
 
 final class Anonymous implements PatternGenerator
 {
-    private const FILE_BEGIN_WITH =
-    "<?php\n";
     private const DEFAULT_VALUES_PATTERN =
     '    $default = %s;'
     . "\n"
     . '    $data = array_merge($default, $data);'
     . "\n";
+
     private const FUNCTION_PATTERN =
-    'function(array $data) use ($class): object {
+    'return function(array $data) use ($class): object {
 %s
     return %s;
-}';
+};';
 
     /** @var PhpDocParser */
     private $phpDocParser;
@@ -40,15 +36,11 @@ final class Anonymous implements PatternGenerator
 
         $node = $this->getNode($reflection);
 
-        return self::FILE_BEGIN_WITH
-            . "\n"
-            . 'return '
-            . sprintf(
-                self::FUNCTION_PATTERN,
-                $this->getDefaultSection($node),
-                $node
-            )
-        ;
+        return sprintf(
+            self::FUNCTION_PATTERN,
+            $this->getDefaultSection($node),
+            $node
+        );
     }
 
     private function getNode(ReflectionClass $class, string $name = ''): Node
@@ -56,7 +48,7 @@ final class Anonymous implements PatternGenerator
         $constructor = $class->getConstructor();
 
         if (null === $constructor) {
-            return new Complex($class->getName(), $name);
+            return new Node\Complex($class->getName(), $name);
         }
 
         return $this->getNodes($constructor, $name);
@@ -64,7 +56,7 @@ final class Anonymous implements PatternGenerator
 
     private function getNodes(ReflectionMethod $method, string $name = ''): Node
     {
-        $node = new Complex($method->getDeclaringClass()->getName(), $name);
+        $node = new Node\Complex($method->getDeclaringClass()->getName(), $name);
 
         foreach ($method->getParameters() as $parameter) {
             $class = $parameter->getClass();
@@ -92,13 +84,13 @@ final class Anonymous implements PatternGenerator
             && $this->phpDocParser->isListOfObject($phpDoc, $parameter)) {
             $class = $this->phpDocParser->getListType($phpDoc, $parameter);
 
-            return new ObjectList(
+            return new Node\ObjectList(
                 $parameter->getName(),
                 $this->getNode(new ReflectionClass($class))
             );
         }
 
-        return new Scalar(
+        return new Node\Scalar(
             $type,
             $parameter->getName(),
             $parameter->isDefaultValueAvailable()
@@ -126,7 +118,7 @@ final class Anonymous implements PatternGenerator
     {
         $values = [];
 
-        if ($node instanceof Complex) {
+        if ($node instanceof Node\Complex) {
             foreach ($node->innerNodes() as $innerNode) {
                 $innerNodeDefaultValues = $this->getDefaultValues($innerNode);
                 if ([] === $innerNodeDefaultValues) {

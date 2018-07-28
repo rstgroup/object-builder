@@ -127,7 +127,7 @@ final class Reflection implements Builder
                                 'startLine',
                                 'endLine',
                                 'startFilePos',
-                                'endFilePos'
+                                'endFilePos',
                             ],
                         ])
                     );

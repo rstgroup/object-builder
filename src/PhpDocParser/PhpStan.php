@@ -14,7 +14,9 @@ use RstGroup\ObjectBuilder\PhpDocParser;
 
 final class PhpStan implements PhpDocParser
 {
+    /** @var PhpStanPhpDocParser */
     private $phpDocParser;
+    /** @var Parser */
     private $phpParser;
 
     public function __construct(

@@ -17,13 +17,8 @@ final class CodeGenerator implements Factory
 
     public function create(string $class): callable
     {
-        $blueprint = $this->generator->create($class);
-        $prefix = '<?php';
+        $pattern = $this->generator->create($class);
 
-        if (substr($blueprint, 0, strlen($prefix)) === $prefix) {
-            $blueprint = substr($blueprint, strlen($prefix));
-        }
-
-        return eval($blueprint . ';');
+        return eval($pattern);
     }
 }

@@ -5,10 +5,10 @@ namespace RstGroup\ObjectBuilder\Test\unit\Builder;
 use PhpParser\Lexer\Emulative;
 use PhpParser\ParserFactory;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use RstGroup\ObjectBuilder\Builder\Blueprint;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
-use PHPStan\PhpDocParser\Parser\PhpDocParser;
 
 class BlueprintTest extends BuilderTest
 {
