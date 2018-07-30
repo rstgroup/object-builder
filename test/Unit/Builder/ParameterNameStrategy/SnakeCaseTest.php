@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test\unit\Builder\ParameterNameStrategy;
+namespace RstGroup\ObjectBuilder\Test\Unit\Builder\ParameterNameStrategy;
 
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\SnakeCase;

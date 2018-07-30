@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test\unit\Builder\Blueprint\Factory;
+namespace RstGroup\ObjectBuilder\Test\Unit\Builder\Blueprint\Factory;
 
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
 

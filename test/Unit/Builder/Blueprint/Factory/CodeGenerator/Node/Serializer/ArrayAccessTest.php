@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test\unit\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer;
+namespace RstGroup\ObjectBuilder\Test\Unit\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Complex;
