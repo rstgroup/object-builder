@@ -63,6 +63,10 @@ final class Reflection implements Builder
             if ($parameter->isDefaultValueAvailable()) {
                 yield $parameter->getDefaultValue();
             }
+
+            if ($parameter->allowsNull()) {
+                yield null;
+            }
         }
     }
 
