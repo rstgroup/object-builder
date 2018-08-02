@@ -14,6 +14,7 @@ use RstGroup\ObjectBuilder\Test\Object\SomeObject;
 use RstGroup\ObjectBuilder\Test\Object\SomeSecondObject;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
+use RstGroup\ObjectBuilder\Test\SimpleNullableConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
@@ -233,5 +234,23 @@ class ReflectionTest extends TestCase
         $this->assertInstanceOf(SimpleMixedConstructor::class, $object->simpleObject2);
         $this->assertSame(1, $object->simpleObject1->someInt);
         $this->assertSame(2, $object->simpleObject2->someInt);
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithNullableParameterWithoutDefaultValue()
+    {
+        $data = [
+            'someString1' => 'some string1',
+            'someString2' => 'some string2',
+        ];
+        $class = SimpleNullableConstructor::class;
+
+        /** @var SimpleNullableConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
+        $this->assertSame('some string1', $object->someString1);
+        $this->assertSame('some string2', $object->someString2);
+        $this->assertnull($object->someInt);
     }
 }
