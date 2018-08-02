@@ -58,10 +58,12 @@ final class Reflection implements Builder
                 }
 
                 yield $this->buildParameter($parameter, $parsedData[$name], $constructor);
+                continue;
             }
 
             if ($parameter->isDefaultValueAvailable()) {
                 yield $parameter->getDefaultValue();
+                continue;
             }
 
             if ($parameter->allowsNull()) {

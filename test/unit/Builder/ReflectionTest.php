@@ -251,6 +251,25 @@ class ReflectionTest extends TestCase
         $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
         $this->assertSame('some string1', $object->someString1);
         $this->assertSame('some string2', $object->someString2);
-        $this->assertnull($object->someInt);
+        $this->assertNull($object->someInt);
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithNullableParameterWithHimValueValue()
+    {
+        $data = [
+            'someString1' => 'some string1',
+            'someInt' => 123,
+            'someString2' => 'some string2',
+        ];
+        $class = SimpleNullableConstructor::class;
+
+        /** @var SimpleNullableConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
+        $this->assertSame('some string1', $object->someString1);
+        $this->assertSame('some string2', $object->someString2);
+        $this->assertSame(123, $object->someInt);
     }
 }
