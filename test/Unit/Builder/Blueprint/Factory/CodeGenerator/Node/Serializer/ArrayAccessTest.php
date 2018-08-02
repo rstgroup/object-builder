@@ -3,10 +3,12 @@
 namespace RstGroup\ObjectBuilder\Test\Unit\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer;
 
 use PHPUnit\Framework\TestCase;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Complex;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\ObjectList;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Scalar;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess;
+use RstGroup\ObjectBuilder\BuildingError;
 
 class ArrayAccessTest extends TestCase
 {
@@ -68,5 +70,15 @@ class ArrayAccessTest extends TestCase
     })($data[\'someList\'])',
             $serializedNode
         );
+    }
+
+    /** @test */
+    public function whenNodeObjectIsNotKnowThenThrowsException(): void
+    {
+        $node = new class('a', 'a') extends Node {};
+
+        $this->expectException(BuildingError::class);
+
+        static::$serializer->serialize($node);
     }
 }
