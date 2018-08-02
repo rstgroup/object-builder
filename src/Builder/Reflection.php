@@ -68,10 +68,16 @@ final class Reflection implements Builder
                 }
 
                 yield $this->buildParameter($parameter, $parsedData[$name], $constructor);
+                continue;
             }
 
             if ($parameter->isDefaultValueAvailable()) {
                 yield $parameter->getDefaultValue();
+                continue;
+            }
+
+            if ($parameter->allowsNull()) {
+                yield null;
             }
         }
     }
@@ -117,7 +123,10 @@ final class Reflection implements Builder
             $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
             foreach ($node->getParamTagValues() as $node) {
                 if ($node->parameterName === '$' . $parameter->getName()) {
-                    $type = $node->type->type;
+                    $typeName = $node->type->type->name;
+                    if ($this->isScalar($typeName)) {
+                        continue;
+                    }
                     $list = [];
                     $parser = (new ParserFactory())->create(
                         ParserFactory::PREFER_PHP7,
@@ -147,7 +156,7 @@ final class Reflection implements Builder
 
                     foreach ($data as $objectConstructorData) {
                         $list[] = $this->build(
-                            $this->getFullClassName($type->name, $namespaces, $constructor->getDeclaringClass()),
+                            $this->getFullClassName($typeName, $namespaces, $constructor->getDeclaringClass()),
                             $objectConstructorData
                         );
                     }
@@ -158,6 +167,19 @@ final class Reflection implements Builder
         }
 
         return $data;
+    }
+
+    private function isScalar(string $value): bool
+    {
+        $scalars = [
+            'string',
+            'int',
+            'float',
+            'double',
+            'mixed',
+        ];
+
+        return in_array($value, $scalars);
     }
 
     /**

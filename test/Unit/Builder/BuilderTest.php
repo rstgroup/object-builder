@@ -6,11 +6,14 @@ use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithScalarTypedArrayAndObjectListConstructor;
+use RstGroup\ObjectBuilder\Test\ListOfObjectsWithScalarTypedArrayConstructor;
 use RstGroup\ObjectBuilder\Test\ListOfObjectsWithUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\Object\SomeObject;
 use RstGroup\ObjectBuilder\Test\Object\SomeSecondObject;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
+use RstGroup\ObjectBuilder\Test\SimpleNullableConstructor;
 use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
@@ -172,5 +175,97 @@ abstract class BuilderTest extends TestCase
         $this->assertSame('some string1', $object->simpleObject1->someString);
         $this->assertSame(2, $object->simpleObject2->someInt);
         $this->assertSame('some string2', $object->simpleObject2->someString);
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithScalarCollectionTypedArrayInConstructor()
+    {
+        $data = [
+            'list1' => ['str', 'str'],
+            'list2' => ['str', 'str'],
+        ];
+        $class = ListOfObjectsWithScalarTypedArrayConstructor::class;
+
+        /** @var ListOfObjectsWithScalarTypedArrayConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayConstructor::class, $object);
+        $this->assertCount(2, $object->list1);
+        $this->assertCount(2, $object->list2);
+        foreach($object->list1 as $element) {
+            $this->assertSame('str', $element);
+        }
+        foreach($object->list2 as $element) {
+            $this->assertSame('str', $element);
+        }
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithBothScalarAndObjectCollectionTypedArrayInConstructor()
+    {
+        $data = [
+            'list1' => ['str', 'str'],
+            'list2' => [
+                [
+                    'someString' => 'some string1',
+                    'someInt' => 1,
+                ],
+                [
+                    'someString' => 'some string2',
+                    'someInt' => 2,
+                ],
+            ],
+        ];
+        $class = ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class;
+
+        /** @var ListOfObjectsWithScalarTypedArrayAndObjectListConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class, $object);
+        $this->assertCount(2, $object->list1);
+        $this->assertCount(2, $object->list2);
+        foreach($object->list1 as $element) {
+            $this->assertSame('str', $element);
+        }
+        foreach($object->list2 as $element) {
+            $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
+        }
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithNullableParameterWithoutDefaultValue()
+    {
+        $data = [
+            'someString1' => 'some string1',
+            'someString2' => 'some string2',
+        ];
+        $class = SimpleNullableConstructor::class;
+
+        /** @var SimpleNullableConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
+        $this->assertSame('some string1', $object->someString1);
+        $this->assertSame('some string2', $object->someString2);
+        $this->assertNull($object->someInt);
+    }
+
+    /** @test */
+    public function iCanBuildObjectWithNullableParameterWithHimValueValue()
+    {
+        $data = [
+            'someString1' => 'some string1',
+            'someInt' => 123,
+            'someString2' => 'some string2',
+        ];
+        $class = SimpleNullableConstructor::class;
+
+        /** @var SimpleNullableConstructor $object */
+        $object = static::$builder->build($class, $data);
+
+        $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
+        $this->assertSame('some string1', $object->someString1);
+        $this->assertSame('some string2', $object->someString2);
+        $this->assertSame(123, $object->someInt);
     }
 }
