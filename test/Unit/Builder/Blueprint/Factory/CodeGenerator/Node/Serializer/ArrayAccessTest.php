@@ -75,7 +75,8 @@ class ArrayAccessTest extends TestCase
     /** @test */
     public function whenNodeObjectIsNotKnowThenThrowsException(): void
     {
-        $node = new class('a', 'a') extends Node {};
+        $node = new class('a', 'a') extends Node {
+        };
 
         $this->expectException(BuildingError::class);
 

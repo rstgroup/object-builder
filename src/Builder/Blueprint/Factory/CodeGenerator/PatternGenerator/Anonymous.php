@@ -27,6 +27,7 @@ final class Anonymous implements PatternGenerator
     /** @var Node\Serializer */
     private $serializer;
 
+    /** @codeCoverageIgnore */
     public function __construct(
         PhpDocParser $parser,
         Node\Serializer $serializer
@@ -98,6 +99,7 @@ final class Anonymous implements PatternGenerator
         return new Node\Scalar(
             $type,
             $parameter->getName(),
+            $parameter->allowsNull(),
             $parameter->isDefaultValueAvailable()
                 ? $parameter->getDefaultValue()
                 : null
@@ -135,7 +137,11 @@ final class Anonymous implements PatternGenerator
         }
 
         if ($node->withDefaultValue()) {
-            $values = $node->defaultValue();
+            return $node->defaultValue();
+        }
+
+        if ($node->nullable()) {
+            return null;
         }
 
         return $values;

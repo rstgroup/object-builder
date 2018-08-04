@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\Unit\Builder\Blueprint\Factory\CodeGenerator\Store;
 
@@ -8,7 +8,7 @@ use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store\Memory;
 class InMemoryTest extends TestCase
 {
     /** @test */
-    public function iCanSaveBlueprintInMemory()
+    public function iCanSaveBlueprintInMemory(): void
     {
         $store = new Memory();
 
@@ -18,7 +18,7 @@ class InMemoryTest extends TestCase
     }
 
     /** @test */
-    public function iCanGetSavedBlueprintInMemory()
+    public function iCanGetSavedBlueprintInMemory(): void
     {
         $store = new Memory([
             'SomeClass' => 'return function() { return \'some string\'; };',
@@ -30,7 +30,7 @@ class InMemoryTest extends TestCase
     }
 
     /** @test */
-    public function whenFileExistsInMemoryThenOverrideIt()
+    public function whenFileExistsInMemoryThenOverrideIt(): void
     {
         $store = new Memory([
             'SomeClass' => 'some string',
@@ -43,7 +43,7 @@ class InMemoryTest extends TestCase
     }
 
     /** @test */
-    public function whenFileDoesNotExistInMemoryThenReturnNull()
+    public function whenFileDoesNotExistInMemoryThenReturnNull(): void
     {
         $store = new Memory();
 
@@ -51,5 +51,4 @@ class InMemoryTest extends TestCase
 
         $this->assertNull($function);
     }
-
 }

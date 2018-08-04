@@ -7,9 +7,10 @@ use Throwable;
 
 final class Memory implements Store
 {
-    /** @var callable[] */
+    /** @var string[] */
     private $store = [];
 
+    /** @param string[] $blueprints */
     public function __construct(array $blueprints = [])
     {
         $this->store = $blueprints;
@@ -29,7 +30,7 @@ final class Memory implements Store
         $this->store[$class] = $blueprint;
     }
 
-    /** @return callable[] */
+    /** @return string[] */
     public function store(): array
     {
         return $this->store;

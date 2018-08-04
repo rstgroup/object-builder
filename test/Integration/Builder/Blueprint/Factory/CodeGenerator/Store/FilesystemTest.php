@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Test\Integration\Builder\Blueprint\Factory\CodeGenerator\Store;
 
@@ -7,15 +7,17 @@ use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store\Filesys
 
 class FilesystemTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
-        if (file_exists('/tmp/SomeClass')) {
-            unlink('/tmp/SomeClass');
+        if (!file_exists('/tmp/SomeClass')) {
+            return;
         }
+
+        unlink('/tmp/SomeClass');
     }
 
     /** @test */
-    public function iCanSaveBlueprintInFilesystem()
+    public function iCanSaveBlueprintInFilesystem(): void
     {
         $store = new Filesystem('/tmp/');
 
@@ -26,7 +28,7 @@ class FilesystemTest extends TestCase
     }
 
     /** @test */
-    public function iCanGetSavedBlueprintInFilesystem()
+    public function iCanGetSavedBlueprintInFilesystem(): void
     {
         $store = new Filesystem('/tmp/');
         file_put_contents(
@@ -40,7 +42,7 @@ class FilesystemTest extends TestCase
     }
 
     /** @test */
-    public function whenFileExistsInFilesystemThenOverrideIt()
+    public function whenFileExistsInFilesystemThenOverrideIt(): void
     {
         $store = new Filesystem('/tmp/');
         file_put_contents(
@@ -55,7 +57,7 @@ class FilesystemTest extends TestCase
     }
 
     /** @test */
-    public function whenFileDoesNotExistInFilesystemThenReturnNull()
+    public function whenFileDoesNotExistInFilesystemThenReturnNull(): void
     {
         $store = new Filesystem('/tmp/');
 

@@ -22,16 +22,16 @@ final class ArrayAccess implements Serializer
 
     public function serialize(Node $node): string
     {
-        switch (get_class($node)) {
-            case Node\Scalar::class:
-                return $this->serializeScalarNode($node);
-                break;
-            case Node\Complex::class:
-                return $this->serializeComplexNode($node);
-                break;
-            case Node\ObjectList::class:
-                return $this->serializeObjectListNode($node);
-                break;
+        if ($node instanceof Node\Scalar) {
+            return $this->serializeScalarNode($node);
+        }
+
+        if ($node instanceof Node\Complex) {
+            return $this->serializeComplexNode($node);
+        }
+
+        if ($node instanceof Node\ObjectList) {
+            return $this->serializeObjectListNode($node);
         }
 
         throw new BuildingError();

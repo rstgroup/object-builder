@@ -18,6 +18,7 @@ use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
 
+// TODO move to component
 abstract class BuilderTest extends TestCase
 {
     /** @var Builder */
@@ -178,7 +179,7 @@ abstract class BuilderTest extends TestCase
     }
 
     /** @test */
-    public function iCanBuildObjectWithScalarCollectionTypedArrayInConstructor()
+    public function iCanBuildObjectWithScalarCollectionTypedArrayInConstructor(): void
     {
         $data = [
             'list1' => ['str', 'str'],
@@ -192,16 +193,16 @@ abstract class BuilderTest extends TestCase
         $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayConstructor::class, $object);
         $this->assertCount(2, $object->list1);
         $this->assertCount(2, $object->list2);
-        foreach($object->list1 as $element) {
+        foreach ($object->list1 as $element) {
             $this->assertSame('str', $element);
         }
-        foreach($object->list2 as $element) {
+        foreach ($object->list2 as $element) {
             $this->assertSame('str', $element);
         }
     }
 
     /** @test */
-    public function iCanBuildObjectWithBothScalarAndObjectCollectionTypedArrayInConstructor()
+    public function iCanBuildObjectWithBothScalarAndObjectCollectionTypedArrayInConstructor(): void
     {
         $data = [
             'list1' => ['str', 'str'],
@@ -224,16 +225,16 @@ abstract class BuilderTest extends TestCase
         $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class, $object);
         $this->assertCount(2, $object->list1);
         $this->assertCount(2, $object->list2);
-        foreach($object->list1 as $element) {
+        foreach ($object->list1 as $element) {
             $this->assertSame('str', $element);
         }
-        foreach($object->list2 as $element) {
+        foreach ($object->list2 as $element) {
             $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
         }
     }
 
     /** @test */
-    public function iCanBuildObjectWithNullableParameterWithoutDefaultValue()
+    public function iCanBuildObjectWithNullableParameterWithoutDefaultValue(): void
     {
         $data = [
             'someString1' => 'some string1',
@@ -251,7 +252,7 @@ abstract class BuilderTest extends TestCase
     }
 
     /** @test */
-    public function iCanBuildObjectWithNullableParameterWithHimValueValue()
+    public function iCanBuildObjectWithNullableParameterWithHimValueValue(): void
     {
         $data = [
             'someString1' => 'some string1',

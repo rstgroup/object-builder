@@ -22,6 +22,7 @@ final class Reflection implements Builder
     /** @var ParameterNameStrategy */
     private $parameterNameStrategy;
 
+    /** @codeCoverageIgnore */
     public function __construct(ParameterNameStrategy $parameterNameStrategy)
     {
         $this->parameterNameStrategy = $parameterNameStrategy;
@@ -179,7 +180,7 @@ final class Reflection implements Builder
             'mixed',
         ];
 
-        return in_array($value, $scalars);
+        return in_array($value, $scalars, true);
     }
 
     /**

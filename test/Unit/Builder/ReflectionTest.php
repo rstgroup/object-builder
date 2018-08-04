@@ -14,7 +14,7 @@ class ReflectionTest extends BuilderTest
         static::$builder = new Reflection(new Simple());
     }
 
-    public function tooFewArgumentsWillTHrowBuildingException()
+    public function tooFewArgumentsWillTHrowBuildingException(): void
     {
         $data = [
             'someString' => 'some string',

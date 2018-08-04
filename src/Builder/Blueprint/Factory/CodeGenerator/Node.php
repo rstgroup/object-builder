@@ -10,13 +10,16 @@ abstract class Node
     private $defaultValue;
     /** @var string */
     private $type;
+    /** @var bool */
+    private $nullable;
 
     /** @param mixed $defaultValue */
-    public function __construct(string $type, string $name, $defaultValue = null)
+    public function __construct(string $type, string $name, bool $nullable = false, $defaultValue = null)
     {
         $this->name = $name;
         $this->defaultValue = $defaultValue;
         $this->type = $type;
+        $this->nullable = $nullable;
     }
 
     public function type(): string
@@ -32,6 +35,11 @@ abstract class Node
     public function withDefaultValue(): bool
     {
         return null !== $this->defaultValue;
+    }
+
+    public function nullable(): bool
+    {
+        return $this->nullable;
     }
 
     /** @return mixed */

@@ -33,6 +33,11 @@ final class PhpStan implements PhpDocParser
 
         foreach ($node->getParamTagValues() as $node) {
             if ($node->parameterName === '$' . $parameter->getName()) {
+                $typeName = $node->type->type->name;
+                if ($this->isScalar($typeName)) {
+                    continue;
+                }
+
                 return true;
             }
         }
@@ -64,6 +69,21 @@ final class PhpStan implements PhpDocParser
                 return $this->getFullClassName($type->name, $namespaces, $class);
             }
         }
+
+        throw new BuildingError();
+    }
+
+    private function isScalar(string $value): bool
+    {
+        $scalars = [
+            'string',
+            'int',
+            'float',
+            'double',
+            'mixed',
+        ];
+
+        return in_array($value, $scalars, true);
     }
 
     /**

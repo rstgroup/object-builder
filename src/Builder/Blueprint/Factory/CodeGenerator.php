@@ -10,6 +10,7 @@ final class CodeGenerator implements Factory
     /** @var PatternGenerator */
     private $generator;
 
+    /** @codeCoverageIgnore */
     public function __construct(PatternGenerator $generator)
     {
         $this->generator = $generator;

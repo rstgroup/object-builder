@@ -4,3 +4,4 @@ vendor
 .php_cs.cache
 .phpcs.cache
 data
+test/result

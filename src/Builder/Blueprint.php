@@ -9,6 +9,7 @@ final class Blueprint implements Builder
     /** @var Builder\Blueprint\Factory */
     private $blueprintFactory;
 
+    /** @codeCoverageIgnore */
     public function __construct(Builder\Blueprint\Factory $factory)
     {
         $this->blueprintFactory = $factory;
