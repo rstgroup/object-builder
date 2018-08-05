@@ -32,7 +32,7 @@ final class PhpStan implements PhpDocParser
         $node = $this->phpDocParser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
 
         foreach ($node->getParamTagValues() as $node) {
-            if ($node->parameterName === '$' . $parameterName) {
+            if ('$' . $parameterName === $node->parameterName) {
                 $typeName = $node->type->type->name;
                 if ($this->isScalar($typeName)) {
                     continue;

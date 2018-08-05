@@ -13,13 +13,12 @@ use ReflectionParameter;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
 use RstGroup\ObjectBuilder\Test\Object\EmptyConstructor;
 
-
 class PhpStanTest extends TestCase
 {
     /** @var PhpStan */
     private static $parser;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$parser = new PhpStan(
             new PhpDocParser(
@@ -36,7 +35,7 @@ class PhpStanTest extends TestCase
      * @test
      * @dataProvider commentsWithObjectList
      */
-    public function whenPhpDockContainListOfObjectThenReturnTrue(string $doc)
+    public function whenPhpDockContainListOfObjectThenReturnTrue(string $doc): void
     {
         $containsListOfObjects = self::$parser->isListOfObject($doc, 'list');
 
@@ -47,7 +46,7 @@ class PhpStanTest extends TestCase
      * @test
      * @dataProvider commentsWithoutObjectList
      */
-    public function whenPhpDockDoesNotContainListOfObjectThenReturnFalse(string $doc)
+    public function whenPhpDockDoesNotContainListOfObjectThenReturnFalse(string $doc): void
     {
         $containsListOfObjects = self::$parser->isListOfObject($doc, 'list');
 
@@ -58,7 +57,7 @@ class PhpStanTest extends TestCase
      * @test
      * @dataProvider commentsWithScalarList
      */
-    public function whenPhpDockContainListOfScalarInsteadObjectThenReturnFalse(string $doc)
+    public function whenPhpDockContainListOfScalarInsteadObjectThenReturnFalse(string $doc): void
     {
         $containsListOfObjects = self::$parser->isListOfObject($doc, 'list');
 
@@ -69,19 +68,21 @@ class PhpStanTest extends TestCase
      * @test
      * @dataProvider commentsWithDifferentObjectListDeclaration
      */
-    public function returnObjectClassOfObjectList(string $doc)
+    public function returnObjectClassOfObjectList(string $doc): void
     {
         $class = self::$parser->getListType(
             $doc,
             new class extends ReflectionParameter {
-                public function __construct() {}
+                public function __construct()
+                {
+                }
 
-                public function getName()
+                public function getName(): string
                 {
                     return 'list';
                 }
 
-                public function getDeclaringClass()
+                public function getDeclaringClass(): ReflectionClass
                 {
                     return new ReflectionClass(EmptyConstructor::class);
                 }

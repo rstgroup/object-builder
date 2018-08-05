@@ -88,7 +88,6 @@ final class Anonymous implements PatternGenerator
 
         if ('array' === $type
             && $this->phpDocParser->isListOfObject($phpDoc, $parameter->getName())) {
-
             $class = $this->phpDocParser->getListType($phpDoc, $parameter);
 
             return new Node\ObjectList(
