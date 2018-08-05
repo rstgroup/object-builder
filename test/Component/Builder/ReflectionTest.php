@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test\Unit\Builder;
+namespace RstGroup\ObjectBuilder\Test\Component\Builder;
 
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\BuildingError;
-use RstGroup\ObjectBuilder\Test\MixedConstructor;
+use RstGroup\ObjectBuilder\Test\Object\MixedConstructor;
 
 class ReflectionTest extends BuilderTest
 {

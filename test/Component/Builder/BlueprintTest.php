@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test\Unit\Builder;
+namespace RstGroup\ObjectBuilder\Test\Component\Builder;
 
 use PhpParser\Lexer\Emulative;
 use PhpParser\ParserFactory;

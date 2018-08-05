@@ -31,6 +31,10 @@
   "scripts": {
     "test-unit": "phpunit -c phpunit.xml --testsuite unit --colors=always ",
     "test-unit-coverage": "phpunit -c phpunit.xml --testsuite unit --coverage-php test/result/unit.cov --colors=never",
+    "test-component": "phpunit -c phpunit.xml --testsuite component --colors=always ",
+    "test-component-coverage": "phpunit -c phpunit.xml --testsuite component --coverage-php test/result/component.cov --colors=never",
+    "test-integration": "phpunit -c phpunit.xml --testsuite integration --colors=always ",
+    "test-integration-coverage": "phpunit -c phpunit.xml --testsuite integration --coverage-php test/result/integration.cov --colors=never",
     "cs-phpstan": [
       "phpstan analyse --level=max --ansi --no-progress -c phpstan.neon src"
     ],

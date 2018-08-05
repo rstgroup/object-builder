@@ -1,19 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test\Unit\Builder;
+namespace RstGroup\ObjectBuilder\Test\Component\Builder;
 
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder;
 use RstGroup\ObjectBuilder\Test\Object\Collection;
+use RstGroup\ObjectBuilder\Test\Object\ComplexHierarchy;
 use RstGroup\ObjectBuilder\Test\Object\EmptyConstructor;
-use RstGroup\ObjectBuilder\Test\Object\SecondEmptyConstructor;
 use RstGroup\ObjectBuilder\Test\Object\MixedConstructor;
 use RstGroup\ObjectBuilder\Test\Object\MixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\Object\NullableConstructor;
 use RstGroup\ObjectBuilder\Test\Object\ScalarConstructor;
-use RstGroup\ObjectBuilder\Test\Object\ComplexHierarchy;
+use RstGroup\ObjectBuilder\Test\Object\SecondEmptyConstructor;
 
-// TODO move to component
 abstract class BuilderTest extends TestCase
 {
     /** @var Builder */
