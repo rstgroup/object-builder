@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test;
+namespace RstGroup\ObjectBuilder\Test\Object;
 
-class SimpleMixedConstructor
+class MixedConstructor
 {
     public $someString;
     public $someInt;
     public $someObject;
 
-    public function __construct(string $someString, int $someInt, SomeObjectWithEmptyConstructor $someObject)
+    public function __construct(string $someString, int $someInt, EmptyConstructor $someObject)
     {
         $this->someString = $someString;
         $this->someInt = $someInt;

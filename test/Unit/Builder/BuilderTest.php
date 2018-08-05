@@ -4,19 +4,14 @@ namespace RstGroup\ObjectBuilder\Test\Unit\Builder;
 
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder;
-use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor;
-use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
-use RstGroup\ObjectBuilder\Test\ListOfObjectsWithScalarTypedArrayAndObjectListConstructor;
-use RstGroup\ObjectBuilder\Test\ListOfObjectsWithScalarTypedArrayConstructor;
-use RstGroup\ObjectBuilder\Test\ListOfObjectsWithUseStmtConstructor;
-use RstGroup\ObjectBuilder\Test\Object\SomeObject;
-use RstGroup\ObjectBuilder\Test\Object\SomeSecondObject;
-use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
-use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
-use RstGroup\ObjectBuilder\Test\SimpleNullableConstructor;
-use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
-use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
-use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\Collection;
+use RstGroup\ObjectBuilder\Test\Object\EmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\SecondEmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\MixedConstructor;
+use RstGroup\ObjectBuilder\Test\Object\MixedConstructorWithDefaultValue;
+use RstGroup\ObjectBuilder\Test\Object\NullableConstructor;
+use RstGroup\ObjectBuilder\Test\Object\ScalarConstructor;
+use RstGroup\ObjectBuilder\Test\Object\ComplexHierarchy;
 
 // TODO move to component
 abstract class BuilderTest extends TestCase
@@ -31,12 +26,12 @@ abstract class BuilderTest extends TestCase
             'someString' => 'some string',
             'someInt' => 999,
         ];
-        $class = SimpleScalarConstructor::class;
+        $class = ScalarConstructor::class;
 
-        /** @var SimpleScalarConstructor $object */
+        /** @var ScalarConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(SimpleScalarConstructor::class, $object);
+        $this->assertInstanceOf(ScalarConstructor::class, $object);
         $this->assertSame('some string', $object->someString);
         $this->assertSame(999, $object->someInt);
     }
@@ -49,15 +44,15 @@ abstract class BuilderTest extends TestCase
             'someInt' => 999,
             'someObject' => [],
         ];
-        $class = SimpleMixedConstructor::class;
+        $class = MixedConstructor::class;
 
-        /** @var SimpleMixedConstructor $object */
+        /** @var MixedConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(SimpleMixedConstructor::class, $object);
+        $this->assertInstanceOf(MixedConstructor::class, $object);
         $this->assertSame('some string', $object->someString);
         $this->assertSame(999, $object->someInt);
-        $this->assertInstanceOf(SomeObjectWithEmptyConstructor::class, $object->someObject);
+        $this->assertInstanceOf(EmptyConstructor::class, $object->someObject);
     }
 
     /** @test */
@@ -66,15 +61,15 @@ abstract class BuilderTest extends TestCase
         $data = [
             'someObject' => [],
         ];
-        $class = SimpleMixedConstructorWithDefaultValue::class;
+        $class = MixedConstructorWithDefaultValue::class;
 
-        /** @var SimpleMixedConstructorWithDefaultValue $object */
+        /** @var MixedConstructorWithDefaultValue $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(SimpleMixedConstructorWithDefaultValue::class, $object);
+        $this->assertInstanceOf(MixedConstructorWithDefaultValue::class, $object);
         $this->assertSame('some string', $object->someString);
         $this->assertSame(999, $object->someInt);
-        $this->assertInstanceOf(SomeObjectWithEmptyConstructor::class, $object->someObject);
+        $this->assertInstanceOf(EmptyConstructor::class, $object->someObject);
     }
 
     /** @test */
@@ -92,15 +87,15 @@ abstract class BuilderTest extends TestCase
                 ],
             ],
         ];
-        $class = ListOfObjectsWithoutUseStmtConstructor::class;
+        $class = Collection\WithoutUseStmtConstructor::class;
 
-        /** @var ListOfObjectsWithoutUseStmtConstructor $object */
+        /** @var Collection\WithoutUseStmtConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(ListOfObjectsWithoutUseStmtConstructor::class, $object);
+        $this->assertInstanceOf(Collection\WithoutUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
         foreach ($object->list as $element) {
-            $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
+            $this->assertInstanceOf(Collection\ScalarConstructor::class, $element);
         }
     }
 
@@ -113,15 +108,15 @@ abstract class BuilderTest extends TestCase
                 [],
             ],
         ];
-        $class = ListOfObjectsWithUseStmtConstructor::class;
+        $class = Collection\WithUseStmtConstructor::class;
 
-        /** @var ListOfObjectsWithUseStmtConstructor $object */
+        /** @var Collection\WithUseStmtConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(ListOfObjectsWithUseStmtConstructor::class, $object);
+        $this->assertInstanceOf(Collection\WithUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
         foreach ($object->list as $element) {
-            $this->assertInstanceOf(SomeSecondObject::class, $element);
+            $this->assertInstanceOf(SecondEmptyConstructor::class, $element);
         }
     }
 
@@ -134,15 +129,15 @@ abstract class BuilderTest extends TestCase
                 [],
             ],
         ];
-        $class = ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor::class;
+        $class = Collection\WithoutUseButWithFQNTypedArrayConstructor::class;
 
-        /** @var ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor $object */
+        /** @var Collection\WithoutUseButWithFQNTypedArrayConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor::class, $object);
+        $this->assertInstanceOf(Collection\WithoutUseButWithFQNTypedArrayConstructor::class, $object);
         $this->assertCount(2, $object->list);
         foreach ($object->list as $element) {
-            $this->assertInstanceOf(SomeObject::class, $element);
+            $this->assertInstanceOf(EmptyConstructor::class, $element);
         }
     }
 
@@ -162,16 +157,16 @@ abstract class BuilderTest extends TestCase
             ],
             'someInt' => 3,
         ];
-        $class = SomeAggregateRoot::class;
+        $class = ComplexHierarchy::class;
 
-        /** @var SomeAggregateRoot $object */
+        /** @var ComplexHierarchy $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(SomeAggregateRoot::class, $object);
+        $this->assertInstanceOf(ComplexHierarchy::class, $object);
         $this->assertSame('some string3', $object->someString);
         $this->assertSame(3, $object->someInt);
-        $this->assertInstanceOf(SimpleScalarConstructor::class, $object->simpleObject1);
-        $this->assertInstanceOf(SimpleMixedConstructor::class, $object->simpleObject2);
+        $this->assertInstanceOf(ScalarConstructor::class, $object->simpleObject1);
+        $this->assertInstanceOf(MixedConstructor::class, $object->simpleObject2);
         $this->assertSame(1, $object->simpleObject1->someInt);
         $this->assertSame('some string1', $object->simpleObject1->someString);
         $this->assertSame(2, $object->simpleObject2->someInt);
@@ -185,12 +180,12 @@ abstract class BuilderTest extends TestCase
             'list1' => ['str', 'str'],
             'list2' => ['str', 'str'],
         ];
-        $class = ListOfObjectsWithScalarTypedArrayConstructor::class;
+        $class = Collection\WithScalarTypedArrayConstructor::class;
 
-        /** @var ListOfObjectsWithScalarTypedArrayConstructor $object */
+        /** @var Collection\WithScalarTypedArrayConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayConstructor::class, $object);
+        $this->assertInstanceOf(Collection\WithScalarTypedArrayConstructor::class, $object);
         $this->assertCount(2, $object->list1);
         $this->assertCount(2, $object->list2);
         foreach ($object->list1 as $element) {
@@ -217,19 +212,19 @@ abstract class BuilderTest extends TestCase
                 ],
             ],
         ];
-        $class = ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class;
+        $class = Collection\WithScalarTypedArrayAndObjectListConstructor::class;
 
-        /** @var ListOfObjectsWithScalarTypedArrayAndObjectListConstructor $object */
+        /** @var Collection\WithScalarTypedArrayAndObjectListConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class, $object);
+        $this->assertInstanceOf(Collection\WithScalarTypedArrayAndObjectListConstructor::class, $object);
         $this->assertCount(2, $object->list1);
         $this->assertCount(2, $object->list2);
         foreach ($object->list1 as $element) {
             $this->assertSame('str', $element);
         }
         foreach ($object->list2 as $element) {
-            $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
+            $this->assertInstanceOf(Collection\ScalarConstructor::class, $element);
         }
     }
 
@@ -240,12 +235,12 @@ abstract class BuilderTest extends TestCase
             'someString1' => 'some string1',
             'someString2' => 'some string2',
         ];
-        $class = SimpleNullableConstructor::class;
+        $class = NullableConstructor::class;
 
-        /** @var SimpleNullableConstructor $object */
+        /** @var NullableConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
+        $this->assertInstanceOf(NullableConstructor::class, $object);
         $this->assertSame('some string1', $object->someString1);
         $this->assertSame('some string2', $object->someString2);
         $this->assertNull($object->someInt);
@@ -259,12 +254,12 @@ abstract class BuilderTest extends TestCase
             'someInt' => 123,
             'someString2' => 'some string2',
         ];
-        $class = SimpleNullableConstructor::class;
+        $class = NullableConstructor::class;
 
-        /** @var SimpleNullableConstructor $object */
+        /** @var NullableConstructor $object */
         $object = static::$builder->build($class, $data);
 
-        $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
+        $this->assertInstanceOf(NullableConstructor::class, $object);
         $this->assertSame('some string1', $object->someString1);
         $this->assertSame('some string2', $object->someString2);
         $this->assertSame(123, $object->someInt);

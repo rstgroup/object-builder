@@ -5,7 +5,7 @@ namespace RstGroup\ObjectBuilder\Test\Unit\Builder;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\BuildingError;
-use RstGroup\ObjectBuilder\Test\SimpleMixedConstructor;
+use RstGroup\ObjectBuilder\Test\MixedConstructor;
 
 class ReflectionTest extends BuilderTest
 {
@@ -20,7 +20,7 @@ class ReflectionTest extends BuilderTest
             'someString' => 'some string',
             'someInt' => 999,
         ];
-        $class = SimpleMixedConstructor::class;
+        $class = MixedConstructor::class;
 
         $this->expectException(BuildingError::class);
 

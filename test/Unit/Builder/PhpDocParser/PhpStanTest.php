@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionParameter;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
-use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\EmptyConstructor;
 
 
 class PhpStanTest extends TestCase
@@ -83,12 +83,12 @@ class PhpStanTest extends TestCase
 
                 public function getDeclaringClass()
                 {
-                    return new ReflectionClass(SomeObjectWithEmptyConstructor::class);
+                    return new ReflectionClass(EmptyConstructor::class);
                 }
             }
         );
 
-        $this->assertSame(SomeObjectWithEmptyConstructor::class, $class);
+        $this->assertSame(EmptyConstructor::class, $class);
     }
 
     /** @return string[][] */
@@ -169,18 +169,18 @@ class PhpStanTest extends TestCase
         return [
             'FQCN' => [
                 '/** @param '
-                . SomeObjectWithEmptyConstructor::class
+                . EmptyConstructor::class
                 . '[] $list */',
             ],
             'with use statement' => [
-                '/** @param SomeObjectWithEmptyConstructor[] $list */',
+                '/** @param EmptyConstructor[] $list */',
             ],
             'without use statement in same namespace' => [
-                '/** @param SomeObjectWithEmptyConstructor[] $list */',
+                '/** @param EmptyConstructor[] $list */',
             ],
 //            TODO
 //            'with partial use statement' => [
-//                '/** @param Object\SomeObjectWithEmptyConstructor[] $list */',
+//                '/** @param Object\EmptyConstructor[] $list */',
 //            ],
         ];
     }

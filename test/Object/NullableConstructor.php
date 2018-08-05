@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test;
+namespace RstGroup\ObjectBuilder\Test\Object;
 
-class SimpleNullableConstructor
+class NullableConstructor
 {
     public $someInt;
     public $someString1;

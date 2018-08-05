@@ -11,11 +11,11 @@ use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
-use RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor;
-use RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue;
-use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
-use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
-use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\Collection\WithoutUseStmtConstructor;
+use RstGroup\ObjectBuilder\Test\Object\ComplexHierarchy;
+use RstGroup\ObjectBuilder\Test\Object\EmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\MixedConstructorWithDefaultValue;
+use RstGroup\ObjectBuilder\Test\Object\ScalarConstructor;
 
 class AnonymousTest extends TestCase
 {
@@ -41,14 +41,14 @@ class AnonymousTest extends TestCase
     /** @test */
     public function iCanGenerateSimpleObjectClosure(): void
     {
-        $class = SomeObjectWithEmptyConstructor::class;
+        $class = EmptyConstructor::class;
 
         $blueprint = self::$factory->create($class);
 
         $this->assertSame(
             'return function(array $data) use ($class): object {
 
-    return new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor();
+    return new RstGroup\ObjectBuilder\Test\Object\EmptyConstructor();
 };',
             $blueprint
         );
@@ -57,7 +57,7 @@ class AnonymousTest extends TestCase
     /** @test */
     public function iCanBuildSimpleObjectWithScalarValuesInConstructor(): void
     {
-        $class = SimpleScalarConstructor::class;
+        $class = ScalarConstructor::class;
 
         $blueprint = self::$factory->create($class);
 
@@ -65,7 +65,7 @@ class AnonymousTest extends TestCase
         $this->assertSame(
             'return function(array $data) use ($class): object {
 
-    return new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
+    return new RstGroup\ObjectBuilder\Test\Object\ScalarConstructor($data[\'someString\'], $data[\'someInt\']);
 };',
             $blueprint
         );
@@ -75,7 +75,7 @@ class AnonymousTest extends TestCase
     /** @test */
     public function iCanBuildSimpleObjectWithDefaultValuesInConstructor(): void
     {
-        $class = SimpleMixedConstructorWithDefaultValue::class;
+        $class = MixedConstructorWithDefaultValue::class;
 
         $blueprint = self::$factory->create($class);
 
@@ -88,7 +88,7 @@ class AnonymousTest extends TestCase
 );
     $data = array_merge($default, $data);
 
-    return new RstGroup\ObjectBuilder\Test\SimpleMixedConstructorWithDefaultValue(new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor(), $data[\'someString\'], $data[\'someInt\']);
+    return new RstGroup\ObjectBuilder\Test\Object\MixedConstructorWithDefaultValue(new RstGroup\ObjectBuilder\Test\Object\EmptyConstructor(), $data[\'someString\'], $data[\'someInt\']);
 };',
             $blueprint
         );
@@ -98,7 +98,7 @@ class AnonymousTest extends TestCase
     /** @test */
     public function iCanBuildAdvancedObjectHierarchy(): void
     {
-        $class = SomeAggregateRoot::class;
+        $class = ComplexHierarchy::class;
 
         $blueprint = self::$factory->create($class);
 
@@ -106,7 +106,7 @@ class AnonymousTest extends TestCase
         $this->assertSame(
             'return function(array $data) use ($class): object {
 
-    return new RstGroup\ObjectBuilder\Test\SomeAggregateRoot($data[\'someString\'], new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'simpleObject1\'][\'someString\'], $data[\'simpleObject1\'][\'someInt\']), new RstGroup\ObjectBuilder\Test\SimpleMixedConstructor($data[\'simpleObject2\'][\'someString\'], $data[\'simpleObject2\'][\'someInt\'], new RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor()), $data[\'someInt\']);
+    return new RstGroup\ObjectBuilder\Test\Object\ComplexHierarchy($data[\'someString\'], new RstGroup\ObjectBuilder\Test\Object\ScalarConstructor($data[\'simpleObject1\'][\'someString\'], $data[\'simpleObject1\'][\'someInt\']), new RstGroup\ObjectBuilder\Test\Object\MixedConstructor($data[\'simpleObject2\'][\'someString\'], $data[\'simpleObject2\'][\'someInt\'], new RstGroup\ObjectBuilder\Test\Object\EmptyConstructor()), $data[\'someInt\']);
 };',
             $blueprint
         );
@@ -116,17 +116,17 @@ class AnonymousTest extends TestCase
     /** @test */
     public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor(): void
     {
-        $class = ListOfObjectsWithoutUseStmtConstructor::class;
+        $class = WithoutUseStmtConstructor::class;
 
         $blueprint = self::$factory->create($class);
 
 // @codingStandardsIgnoreStart
         $this->assertSame('return function(array $data) use ($class): object {
 
-    return new RstGroup\ObjectBuilder\Test\ListOfObjectsWithoutUseStmtConstructor((function (array $list) {
+    return new RstGroup\ObjectBuilder\Test\Object\Collection\WithoutUseStmtConstructor((function (array $list) {
         $arr = [];
         foreach ($list as $data) {
-            $arr[] = new RstGroup\ObjectBuilder\Test\SimpleScalarConstructor($data[\'someString\'], $data[\'someInt\']);
+            $arr[] = new RstGroup\ObjectBuilder\Test\Object\Collection\ScalarConstructor($data[\'someString\'], $data[\'someInt\']);
         }
         
         return $arr;

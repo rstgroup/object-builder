@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test;
+namespace RstGroup\ObjectBuilder\Test\Object\Collection;
 
-class ListOfObjectsWithScalarTypedArrayAndObjectListConstructor
+class WithScalarTypedArrayAndObjectListConstructor
 {
     public $list1;
     public $list2;
 
     /**
      * @param string[] $list1
-     * @param SimpleScalarConstructor[] $list2
+     * @param ScalarConstructor[] $list2
      */
     public function __construct(array $list1, array $list2)
     {

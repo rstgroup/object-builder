@@ -2,7 +2,7 @@
 
 namespace RstGroup\ObjectBuilder\Test\Object;
 
-class SomeObject
+class EmptyConstructor
 {
     public function __construct()
     {

@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test;
+namespace RstGroup\ObjectBuilder\Test\Object;
 
-class SomeAggregateRoot
+class ComplexHierarchy
 {
     public $someString;
     public $simpleObject1;
@@ -11,8 +11,8 @@ class SomeAggregateRoot
 
     public function __construct(
         string $someString,
-        SimpleScalarConstructor $simpleObject1,
-        SimpleMixedConstructor $simpleObject2,
+        ScalarConstructor $simpleObject1,
+        MixedConstructor $simpleObject2,
         int $someInt
     ) {
         $this->someString = $someString;

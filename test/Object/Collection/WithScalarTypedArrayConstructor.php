@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test;
+namespace RstGroup\ObjectBuilder\Test\Object\Collection;
 
-class ListOfObjectsWithScalarTypedArrayConstructor
+class WithScalarTypedArrayConstructor
 {
     public $list1;
     public $list2;

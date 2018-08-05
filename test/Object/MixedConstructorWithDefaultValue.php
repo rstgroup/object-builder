@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Test;
+namespace RstGroup\ObjectBuilder\Test\Object;
 
-class SimpleMixedConstructorWithDefaultValue
+class MixedConstructorWithDefaultValue
 {
     public $someString;
     public $someInt;
     public $someObject;
 
     public function __construct(
-        SomeObjectWithEmptyConstructor $someObject,
+        EmptyConstructor $someObject,
         string $someString = 'some string',
         int $someInt = 999
     ) {
