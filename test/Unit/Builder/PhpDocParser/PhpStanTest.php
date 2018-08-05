@@ -11,7 +11,9 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionParameter;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
-use RstGroup\ObjectBuilder\Test\Object\EmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\Collection\WithoutUseButWithFQNTypedArrayConstructor;
+use RstGroup\ObjectBuilder\Test\Object\Collection\WithoutUseStmtConstructor;
+use RstGroup\ObjectBuilder\Test\Object\Collection\WithUseStmtConstructor;
 
 class PhpStanTest extends TestCase
 {
@@ -68,28 +70,14 @@ class PhpStanTest extends TestCase
      * @test
      * @dataProvider commentsWithDifferentObjectListDeclaration
      */
-    public function returnObjectClassOfObjectList(string $doc): void
-    {
-        $class = self::$parser->getListType(
-            $doc,
-            new class extends ReflectionParameter {
-                public function __construct()
-                {
-                }
+    public function returnObjectClassOfObjectList(
+        string $doc,
+        ReflectionParameter $param,
+        string $expectedClass
+    ): void {
+        $class = self::$parser->getListType($doc, $param);
 
-                public function getName(): string
-                {
-                    return 'list';
-                }
-
-                public function getDeclaringClass(): ReflectionClass
-                {
-                    return new ReflectionClass(EmptyConstructor::class);
-                }
-            }
-        );
-
-        $this->assertSame(EmptyConstructor::class, $class);
+        $this->assertSame($expectedClass, $class);
     }
 
     /** @return string[][] */
@@ -164,24 +152,41 @@ class PhpStanTest extends TestCase
         ];
     }
 
-    /** @return string[][] */
+    /** @return mixed[][] */
     public function commentsWithDifferentObjectListDeclaration(): array
     {
+        $constructors = [
+            'FQCN' => (new ReflectionClass(
+                    WithoutUseButWithFQNTypedArrayConstructor::class
+                ))->getConstructor(),
+            'with use statement' => (new ReflectionClass(
+                    WithUseStmtConstructor::class
+                ))->getConstructor(),
+            'without use statement in same namespace' => (new ReflectionClass(
+                    WithoutUseStmtConstructor::class
+                ))->getConstructor()
+        ];
+
         return [
             'FQCN' => [
-                '/** @param '
-                . EmptyConstructor::class
-                . '[] $list */',
+                $constructors['FQCN']->getDocComment(),
+                $constructors['FQCN']->getParameters()[0],
+                '\RstGroup\ObjectBuilder\Test\Object\EmptyConstructor',
             ],
             'with use statement' => [
-                '/** @param EmptyConstructor[] $list */',
+                $constructors['with use statement']->getDocComment(),
+                $constructors['with use statement']->getParameters()[0],
+                '\RstGroup\ObjectBuilder\Test\Object\SecondEmptyConstructor',
             ],
             'without use statement in same namespace' => [
-                '/** @param EmptyConstructor[] $list */',
+                $constructors['without use statement in same namespace']->getDocComment(),
+                $constructors['without use statement in same namespace']->getParameters()[0],
+                '\RstGroup\ObjectBuilder\Test\Object\Collection\ScalarConstructor',
             ],
 //            TODO
-//            'with partial use statement' => [
-//                '/** @param Object\EmptyConstructor[] $list */',
+//            'partial with use statement' => [
+//            ],
+//            'partial without use statement' => [
 //            ],
         ];
     }

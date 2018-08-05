@@ -128,10 +128,10 @@ final class PhpStan implements PhpDocParser
         }
 
         if (0 === count($namespaces)) {
-            return $class->getNamespaceName() . '\\' . $name;
+            return '\\' . $class->getNamespaceName() . '\\' . $name;
         }
 
-        return $this->getNamespaceForClass($name, $namespaces);
+        return '\\' . $this->getNamespaceForClass($name, $namespaces);
     }
 
     /**
