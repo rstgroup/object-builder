@@ -19,6 +19,7 @@ final class PhpStan implements PhpDocParser
     /** @var Parser */
     private $phpParser;
 
+    /** @codeCoverageIgnore */
     public function __construct(
         PhpStanPhpDocParser $phpDocParser,
         Parser $phpParser

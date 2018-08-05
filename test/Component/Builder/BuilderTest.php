@@ -12,11 +12,23 @@ use RstGroup\ObjectBuilder\Test\Object\MixedConstructorWithDefaultValue;
 use RstGroup\ObjectBuilder\Test\Object\NullableConstructor;
 use RstGroup\ObjectBuilder\Test\Object\ScalarConstructor;
 use RstGroup\ObjectBuilder\Test\Object\SecondEmptyConstructor;
+use RstGroup\ObjectBuilder\Test\Object\WithoutConstructor;
 
 abstract class BuilderTest extends TestCase
 {
     /** @var Builder */
     protected static $builder;
+
+    /** @test */
+    public function iCanBuildObjectWithoutConstructor(): void
+    {
+        $class = WithoutConstructor::class;
+
+        /** @var WithoutConstructor $object */
+        $object = static::$builder->build($class, []);
+
+        $this->assertInstanceOf(WithoutConstructor::class, $object);
+    }
 
     /** @test */
     public function iCanBuildSimpleObjectWithScalarValuesInConstructor(): void

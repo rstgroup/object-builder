@@ -10,6 +10,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionParameter;
+use RstGroup\ObjectBuilder\BuildingError;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
 use RstGroup\ObjectBuilder\Test\Object\Collection\WithoutUseButWithFQNTypedArrayConstructor;
 use RstGroup\ObjectBuilder\Test\Object\Collection\WithoutUseStmtConstructor;
@@ -78,6 +79,28 @@ class PhpStanTest extends TestCase
         $class = self::$parser->getListType($doc, $param);
 
         $this->assertSame($expectedClass, $class);
+    }
+
+    /** @test */
+    public function throwExceptionWhenParameterIsNotDeclaredInPhpDoc()
+    {
+        $this->expectException(BuildingError::class);
+        $paramReflection = new class extends ReflectionParameter
+        {
+            public function __construct()
+            {
+            }
+
+            public function getName(): string
+            {
+                return 'unexistedName';
+            }
+        };
+
+        self::$parser->getListType(
+            '/** @param SimpleObject[] $list */',
+            $paramReflection
+        );
     }
 
     /** @return string[][] */
@@ -184,9 +207,9 @@ class PhpStanTest extends TestCase
                 '\RstGroup\ObjectBuilder\Test\Object\Collection\ScalarConstructor',
             ],
 //            TODO
-//            'partial with use statement' => [
+//            'partial namespace with use statement' => [
 //            ],
-//            'partial without use statement' => [
+//            'partial namespace without use statement' => [
 //            ],
         ];
     }
