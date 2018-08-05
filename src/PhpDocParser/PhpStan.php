@@ -27,12 +27,12 @@ final class PhpStan implements PhpDocParser
         $this->phpParser = $phpParser;
     }
 
-    public function isListOfObject(string $comment, ReflectionParameter $parameter): bool
+    public function isListOfObject(string $comment, string $parameterName): bool
     {
         $node = $this->phpDocParser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
 
         foreach ($node->getParamTagValues() as $node) {
-            if ($node->parameterName === '$' . $parameter->getName()) {
+            if ($node->parameterName === '$' . $parameterName) {
                 $typeName = $node->type->type->name;
                 if ($this->isScalar($typeName)) {
                     continue;
@@ -77,6 +77,7 @@ final class PhpStan implements PhpDocParser
     {
         $scalars = [
             'string',
+            'bool',
             'int',
             'float',
             'double',
@@ -122,7 +123,7 @@ final class PhpStan implements PhpDocParser
     /** @param string[] $namespaces */
     private function getFullClassName(string $name, array $namespaces, ReflectionClass $class): string
     {
-        if ('\\' === $name[0]) {
+        if ('\\' === $name[0] || explode('\\', $name)[0] !== $name) {
             return $name;
         }
 

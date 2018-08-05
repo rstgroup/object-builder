@@ -8,7 +8,7 @@ interface PhpDocParser
 {
     public function isListOfObject(
         string $comment,
-        ReflectionParameter $parameter
+        string $parameterName
     ): bool;
 
     public function getListType(
