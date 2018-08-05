@@ -2,8 +2,8 @@
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator;
 
-interface Store
+interface PatternStore
 {
-    public function get(string $class): ?callable;
+    public function get(string $class): ?string;
     public function save(string $class, string $blueprint): void;
 }

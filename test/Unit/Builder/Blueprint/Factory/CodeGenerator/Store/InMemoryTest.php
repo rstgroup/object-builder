@@ -3,7 +3,7 @@
 namespace RstGroup\ObjectBuilder\Test\Unit\Builder\Blueprint\Factory\CodeGenerator\Store;
 
 use PHPUnit\Framework\TestCase;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store\Memory;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore\Memory;
 
 class InMemoryTest extends TestCase
 {
@@ -26,7 +26,10 @@ class InMemoryTest extends TestCase
 
         $function = $store->get('SomeClass');
 
-        $this->assertSame('some string', $function());
+        $this->assertSame(
+            'return function() { return \'some string\'; };',
+            $function
+        );
     }
 
     /** @test */

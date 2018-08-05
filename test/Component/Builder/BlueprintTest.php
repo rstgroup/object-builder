@@ -16,17 +16,20 @@ class BlueprintTest extends BuilderTest
     {
         static::$builder = new Blueprint(
             new Blueprint\Factory\CodeGenerator(
-                new Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous(
-                    new PhpStan(
-                        new PhpDocParser(
-                            new TypeParser(),
-                            new ConstExprParser()
+                new Blueprint\Factory\CodeGenerator\PatternGenerator\StoreDecorator(
+                    new Blueprint\Factory\CodeGenerator\PatternStore\Memory(),
+                    new Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous(
+                        new PhpStan(
+                            new PhpDocParser(
+                                new TypeParser(),
+                                new ConstExprParser()
+                            ),
+                            (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Emulative([
+                                'usedAttributes' => ['comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'],
+                            ]))
                         ),
-                        (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Emulative([
-                            'usedAttributes' => ['comments', 'startLine', 'endLine', 'startFilePos', 'endFilePos'],
-                        ]))
-                    ),
-                    new Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess()
+                        new Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess()
+                    )
                 )
             )
         );

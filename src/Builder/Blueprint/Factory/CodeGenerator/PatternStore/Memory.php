@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store;
+namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
 
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
 use Throwable;
 
-final class Memory implements Store
+final class Memory implements PatternStore
 {
     /** @var string[] */
     private $store = [];
@@ -16,10 +16,10 @@ final class Memory implements Store
         $this->store = $blueprints;
     }
 
-    public function get(string $class): ?callable
+    public function get(string $class): ?string
     {
         try {
-            return eval($this->store[$class]);
+            return $this->store[$class];
         } catch (Throwable $exception) {
             return null;
         }

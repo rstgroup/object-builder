@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store;
+namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
 
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
 
-final class Filesystem implements Store
+final class Filesystem implements PatternStore
 {
     /** @var string */
     private $path;
@@ -14,11 +14,11 @@ final class Filesystem implements Store
         $this->path = $path;
     }
 
-    public function get(string $class): ?callable
+    public function get(string $class): ?string
     {
         $fileFullPath = $this->path . $class;
         if (file_exists($fileFullPath)) {
-            return require $fileFullPath;
+            return file_get_contents($fileFullPath);
         }
 
         return null;

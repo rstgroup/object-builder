@@ -3,7 +3,7 @@
 namespace RstGroup\ObjectBuilder\Test\Integration\Builder\Blueprint\Factory\CodeGenerator\Store;
 
 use PHPUnit\Framework\TestCase;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Store\Filesystem;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore\Filesystem;
 
 class FilesystemTest extends TestCase
 {
@@ -33,12 +33,15 @@ class FilesystemTest extends TestCase
         $store = new Filesystem('/tmp/');
         file_put_contents(
             '/tmp/SomeClass',
-            '<?php return function() { return \'some string\'; };'
+            'return function() { return \'some string\'; };'
         );
 
         $function = $store->get('SomeClass');
 
-        $this->assertSame('some string', $function());
+        $this->assertSame(
+            'return function() { return \'some string\'; };',
+            $function
+        );
     }
 
     /** @test */
