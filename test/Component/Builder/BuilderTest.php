@@ -34,8 +34,8 @@ abstract class BuilderTest extends TestCase
     public function iCanBuildSimpleObjectWithScalarValuesInConstructor(): void
     {
         $data = [
-            'someString' => 'some string',
-            'someInt' => 999,
+            'some_string' => 'some string',
+            'some_int' => 999,
         ];
         $class = ScalarConstructor::class;
 
@@ -51,9 +51,9 @@ abstract class BuilderTest extends TestCase
     public function iCanBuildSimpleObjectWithScalarAndObjectValuesInConstructor(): void
     {
         $data = [
-            'someString' => 'some string',
-            'someInt' => 999,
-            'someObject' => [],
+            'some_string' => 'some string',
+            'some_int' => 999,
+            'some_object' => [],
         ];
         $class = MixedConstructor::class;
 
@@ -70,7 +70,7 @@ abstract class BuilderTest extends TestCase
     public function iCanBuildSimpleObjectWithDefaultValuesInConstructor(): void
     {
         $data = [
-            'someObject' => [],
+            'some_object' => [],
         ];
         $class = MixedConstructorWithDefaultValue::class;
 
@@ -89,12 +89,12 @@ abstract class BuilderTest extends TestCase
         $data = [
             'list' => [
                 [
-                    'someString' => 'some string1',
-                    'someInt' => 1,
+                    'some_string' => 'some string1',
+                    'some_int' => 1,
                 ],
                 [
-                    'someString' => 'some string2',
-                    'someInt' => 2,
+                    'some_string' => 'some string2',
+                    'some_int' => 2,
                 ],
             ],
         ];
@@ -156,17 +156,17 @@ abstract class BuilderTest extends TestCase
     public function iCanBuildAdvancedObjectHierarchy(): void
     {
         $data = [
-            'someString' => 'some string3',
-            'simpleObject1' => [
-                'someString' => 'some string1',
+            'some_string' => 'some string3',
+            'simple_object_1' => [
+                'some_string' => 'some string1',
                 'someInt' => 1,
             ],
-            'simpleObject2' => [
-                'someString' => 'some string2',
-                'someInt' => 2,
-                'someObject' => [],
+            'simple_object_2' => [
+                'some_string' => 'some string2',
+                'some_int' => 2,
+                'some_object' => [],
             ],
-            'someInt' => 3,
+            'some_int' => 3,
         ];
         $class = ComplexHierarchy::class;
 
@@ -214,12 +214,12 @@ abstract class BuilderTest extends TestCase
             'list1' => ['str', 'str'],
             'list2' => [
                 [
-                    'someString' => 'some string1',
-                    'someInt' => 1,
+                    'some_string' => 'some string1',
+                    'some_int' => 1,
                 ],
                 [
-                    'someString' => 'some string2',
-                    'someInt' => 2,
+                    'some_string' => 'some string2',
+                    'some_int' => 2,
                 ],
             ],
         ];
@@ -243,8 +243,8 @@ abstract class BuilderTest extends TestCase
     public function iCanBuildObjectWithNullableParameterWithoutDefaultValue(): void
     {
         $data = [
-            'someString1' => 'some string1',
-            'someString2' => 'some string2',
+            'some_string_1' => 'some string1',
+            'some_string_2' => 'some string2',
         ];
         $class = NullableConstructor::class;
 
@@ -261,9 +261,9 @@ abstract class BuilderTest extends TestCase
     public function iCanBuildObjectWithNullableParameterWithHimValueValue(): void
     {
         $data = [
-            'someString1' => 'some string1',
-            'someInt' => 123,
-            'someString2' => 'some string2',
+            'some_string_1' => 'some string1',
+            'some_int' => 123,
+            'some_string_2' => 'some string2',
         ];
         $class = NullableConstructor::class;
 

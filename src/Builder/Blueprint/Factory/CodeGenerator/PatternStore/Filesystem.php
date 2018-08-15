@@ -18,7 +18,10 @@ final class Filesystem implements PatternStore
     {
         $fileFullPath = $this->path . $class;
         if (file_exists($fileFullPath)) {
-            return file_get_contents($fileFullPath);
+            /** @var string $content */
+            $content = file_get_contents($fileFullPath);
+
+            return $content;
         }
 
         return null;

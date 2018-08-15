@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
 
@@ -10,6 +10,7 @@ class Dummy implements PatternGenerator
     /** @var string[] */
     private $store;
 
+    /** @param mixed[] $store */
     public function __construct(array $store = [])
     {
         $this->store = $store;

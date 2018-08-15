@@ -8,6 +8,7 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use RstGroup\ObjectBuilder\Builder\Blueprint;
+use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\SnakeCase;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
 
 class BlueprintTest extends BuilderTest
@@ -31,7 +32,8 @@ class BlueprintTest extends BuilderTest
                         new Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess()
                     )
                 )
-            )
+            ),
+            new SnakeCase()
         );
     }
 }

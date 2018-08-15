@@ -13,10 +13,10 @@ final class SnakeCase implements ParameterNameStrategy
 
     public function getName(string $parameterName): string
     {
-        return $this->snakeCaseToCamelCase($parameterName);
+        return $this->toCamelCase($parameterName);
     }
 
-    private function snakeCaseToCamelCase(string $string): string
+    private function toCamelCase(string $string): string
     {
         $str = str_replace('_', '', ucwords($string, '_'));
 

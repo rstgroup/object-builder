@@ -8,11 +8,16 @@ final class Blueprint implements Builder
 {
     /** @var Builder\Blueprint\Factory */
     private $blueprintFactory;
+    /** @var ParameterNameStrategy */
+    private $strategy;
 
     /** @codeCoverageIgnore */
-    public function __construct(Builder\Blueprint\Factory $factory)
-    {
+    public function __construct(
+        Builder\Blueprint\Factory $factory,
+        ParameterNameStrategy $strategy
+    ) {
         $this->blueprintFactory = $factory;
+        $this->strategy = $strategy;
     }
 
     /** @param mixed[] $data */
@@ -20,6 +25,31 @@ final class Blueprint implements Builder
     {
         $blueprint = $this->blueprintFactory->create($class);
 
-        return $blueprint($data);
+        $preparedData = $this->prepareData($data);
+
+        return $blueprint($preparedData);
+    }
+
+    /**
+     * @param mixed[] $data
+     * @return mixed[]
+     */
+    private function prepareData(array $data): array
+    {
+        $preparedData = [];
+
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $value = $this->prepareData($value);
+            }
+
+            if (!is_int($key)) {
+                $key = $this->strategy->getName($key);
+            }
+
+            $preparedData[$key] = $value;
+        }
+
+        return $preparedData;
     }
 }

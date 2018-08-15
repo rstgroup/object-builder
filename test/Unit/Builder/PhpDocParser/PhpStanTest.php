@@ -82,7 +82,7 @@ class PhpStanTest extends TestCase
     }
 
     /** @test */
-    public function throwExceptionWhenParameterIsNotDeclaredInPhpDoc()
+    public function throwExceptionWhenParameterIsNotDeclaredInPhpDoc(): void
     {
         $this->expectException(BuildingError::class);
         $paramReflection = new class extends ReflectionParameter
@@ -180,14 +180,14 @@ class PhpStanTest extends TestCase
     {
         $constructors = [
             'FQCN' => (new ReflectionClass(
-                    WithoutUseButWithFQNTypedArrayConstructor::class
-                ))->getConstructor(),
+                WithoutUseButWithFQNTypedArrayConstructor::class
+            ))->getConstructor(),
             'with use statement' => (new ReflectionClass(
-                    WithUseStmtConstructor::class
-                ))->getConstructor(),
+                WithUseStmtConstructor::class
+            ))->getConstructor(),
             'without use statement in same namespace' => (new ReflectionClass(
-                    WithoutUseStmtConstructor::class
-                ))->getConstructor()
+                WithoutUseStmtConstructor::class
+            ))->getConstructor(),
         ];
 
         return [

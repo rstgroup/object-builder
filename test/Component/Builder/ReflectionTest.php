@@ -2,7 +2,7 @@
 
 namespace RstGroup\ObjectBuilder\Test\Component\Builder;
 
-use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
+use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\SnakeCase;
 use RstGroup\ObjectBuilder\Builder\Reflection;
 use RstGroup\ObjectBuilder\BuildingError;
 use RstGroup\ObjectBuilder\Test\Object\MixedConstructor;
@@ -11,14 +11,15 @@ class ReflectionTest extends BuilderTest
 {
     public static function setUpBeforeClass(): void
     {
-        static::$builder = new Reflection(new Simple());
+        static::$builder = new Reflection(new SnakeCase());
     }
 
-    public function tooFewArgumentsWillTHrowBuildingException(): void
+    /** @test */
+    public function tooFewArgumentsWillThrowBuildingException(): void
     {
         $data = [
-            'someString' => 'some string',
-            'someInt' => 999,
+            'some_string' => 'some string',
+            'some_int' => 999,
         ];
         $class = MixedConstructor::class;
 
