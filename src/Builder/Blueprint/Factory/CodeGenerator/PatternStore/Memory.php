@@ -3,7 +3,6 @@
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
 
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
-use Throwable;
 
 final class Memory implements PatternStore
 {
@@ -18,11 +17,11 @@ final class Memory implements PatternStore
 
     public function get(string $class): ?string
     {
-        try {
-            return $this->store[$class];
-        } catch (Throwable $exception) {
+        if (! isset($this->store[$class])) {
             return null;
         }
+
+        return $this->store[$class];
     }
 
     public function save(string $class, string $blueprint): void

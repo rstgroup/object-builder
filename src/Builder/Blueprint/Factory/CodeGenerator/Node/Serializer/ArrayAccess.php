@@ -34,7 +34,9 @@ final class ArrayAccess implements Serializer
             return $this->serializeObjectListNode($node);
         }
 
-        throw new BuildingError();
+        throw new BuildingError(
+            sprintf('Undefined node type: %s', get_class($node))
+        );
     }
 
     private function serializeScalarNode(Node\Scalar $node): string

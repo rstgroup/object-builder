@@ -14,7 +14,7 @@ abstract class Node
     private $nullable;
 
     /** @param mixed $defaultValue */
-    public function __construct(string $type, string $name, bool $nullable = false, $defaultValue = null)
+    public function __construct(string $type, string $name, bool $nullable, $defaultValue)
     {
         $this->name = $name;
         $this->defaultValue = $defaultValue;
@@ -32,8 +32,12 @@ abstract class Node
         return $this->name;
     }
 
-    public function withDefaultValue(): bool
+    public function hasDefaultValue(): bool
     {
+        if ($this->nullable()) {
+            return true;
+        }
+
         return null !== $this->defaultValue;
     }
 

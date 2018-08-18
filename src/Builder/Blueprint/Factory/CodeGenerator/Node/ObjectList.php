@@ -11,7 +11,12 @@ final class ObjectList extends Node
 
     public function __construct(string $name, Node $objectNode)
     {
-        parent::__construct($objectNode->type(), $name);
+        parent::__construct(
+            $objectNode->type(),
+            $name,
+            false,
+            null
+        );
         $this->objectNode = $objectNode;
     }
 

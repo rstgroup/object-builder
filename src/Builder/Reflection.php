@@ -104,17 +104,7 @@ final class Reflection implements Builder
         $class = $parameter->getClass();
 
         if (null !== $class) {
-            $name = $class->getName();
-            $constructorMethod = $class->getConstructor();
-            $parameters = [];
-
-            if (null !== $constructorMethod) {
-                /** @var \Traversable $iterator */
-                $iterator = $this->collect($constructorMethod, $data);
-                $parameters = iterator_to_array($iterator);
-            }
-
-            return new $name(...$parameters);
+            return $this->build($class->getName(), $data);
         }
 
         if ($parameter->isArray()) {

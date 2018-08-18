@@ -4,6 +4,7 @@ namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
 
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
+use RstGroup\ObjectBuilder\BuildingError;
 
 final class CodeGenerator implements Factory
 {
@@ -20,6 +21,16 @@ final class CodeGenerator implements Factory
     {
         $pattern = $this->generator->create($class);
 
-        return eval($pattern);
+        $blueprint = eval($pattern);
+        if (! is_callable($blueprint)) {
+            throw new BuildingError(
+                sprintf(
+                    'Generated blueprint is not valid %s',
+                    (string) $blueprint
+                )
+            );
+        }
+
+        return $blueprint;
     }
 }

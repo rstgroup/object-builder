@@ -23,7 +23,7 @@ class ArrayAccessTest extends TestCase
     /** @test */
     public function serializeScalarNodeToArrayAccessStringWithNodeName(): void
     {
-        $node = new Scalar('string', 'someName');
+        $node = new Scalar('string', 'someName', false, null);
 
         $serializedNode = static::$serializer->serialize($node);
 
@@ -33,9 +33,9 @@ class ArrayAccessTest extends TestCase
     /** @test */
     public function serializeComplexNodeToArrayAccessString(): void
     {
-        $node = new Complex('SomeClassName', 'someName');
-        $scalarStringNode = new Scalar('string', 'someStringName');
-        $scalarIntNode = new Scalar('int', 'someInt');
+        $node = new Complex('SomeClassName', 'someName', false, null);
+        $scalarStringNode = new Scalar('string', 'someStringName', false, null);
+        $scalarIntNode = new Scalar('int', 'someInt', false, null);
         $node->add($scalarStringNode);
         $node->add($scalarIntNode);
 
@@ -50,9 +50,9 @@ class ArrayAccessTest extends TestCase
     /** @test */
     public function serializeObjectListNodeToArrayAccessString(): void
     {
-        $objectNode = new Complex('SomeClassName', 'someName');
-        $scalarStringNode = new Scalar('string', 'someStringName');
-        $scalarIntNode = new Scalar('int', 'someInt');
+        $objectNode = new Complex('SomeClassName', 'someName', false, null);
+        $scalarStringNode = new Scalar('string', 'someStringName', false, null);
+        $scalarIntNode = new Scalar('int', 'someInt', false, null);
         $objectNode->add($scalarStringNode);
         $objectNode->add($scalarIntNode);
         $node = new ObjectList('someList', $objectNode);
@@ -75,7 +75,7 @@ class ArrayAccessTest extends TestCase
     /** @test */
     public function whenNodeObjectIsNotKnowThenThrowsException(): void
     {
-        $node = new class('a', 'a') extends Node {
+        $node = new class('a', 'a', false, null) extends Node {
         };
 
         $this->expectException(BuildingError::class);

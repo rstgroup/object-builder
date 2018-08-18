@@ -54,7 +54,7 @@ final class Anonymous implements PatternGenerator
         $constructor = $class->getConstructor();
 
         if (null === $constructor) {
-            return new Node\Complex($class->getName(), $name);
+            return new Node\Complex($class->getName(), $name, false, null);
         }
 
         return $this->getNodes($constructor, $name);
@@ -62,7 +62,12 @@ final class Anonymous implements PatternGenerator
 
     private function getNodes(ReflectionMethod $method, string $name = ''): Node
     {
-        $node = new Node\Complex($method->getDeclaringClass()->getName(), $name);
+        $node = new Node\Complex(
+            $method->getDeclaringClass()->getName(),
+            $name,
+            false,
+            null
+        );
 
         foreach ($method->getParameters() as $parameter) {
             $class = $parameter->getClass();
@@ -136,7 +141,7 @@ final class Anonymous implements PatternGenerator
             }
         }
 
-        if ($node->withDefaultValue()) {
+        if ($node->hasDefaultValue()) {
             return $node->defaultValue();
         }
 
