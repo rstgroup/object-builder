@@ -12,7 +12,7 @@ class CodeGeneratorTest extends TestCase
     public function whenCreatedBlueprintIsNotCallableThenThrowBuildingError(): void
     {
         $codeGenerator = new CodeGenerator(
-            new CodeGenerator\PatternGenerator\Dummy([
+            new CodeGenerator\Pattern\Generator\Dummy([
                 'someClass' => 'return 123;',
             ])
         );
@@ -26,7 +26,7 @@ class CodeGeneratorTest extends TestCase
     public function whenCreatedBlueprintIsCallableThenReturnIt(): void
     {
         $codeGenerator = new CodeGenerator(
-            new CodeGenerator\PatternGenerator\Dummy([
+            new CodeGenerator\Pattern\Generator\Dummy([
                 'someClass' => 'return function() { return 123; };',
             ])
         );

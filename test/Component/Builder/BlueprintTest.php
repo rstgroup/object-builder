@@ -17,9 +17,9 @@ class BlueprintTest extends BuilderTest
     {
         static::$builder = new Blueprint(
             new Blueprint\Factory\CodeGenerator(
-                new Blueprint\Factory\CodeGenerator\PatternGenerator\StoreDecorator(
-                    new Blueprint\Factory\CodeGenerator\PatternStore\Memory(),
-                    new Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous(
+                new Blueprint\Factory\CodeGenerator\Pattern\Generator\StoreDecorator(
+                    new Blueprint\Factory\CodeGenerator\Pattern\Store\Memory(),
+                    new Blueprint\Factory\CodeGenerator\Pattern\Generator\Anonymous(
                         new PhpStan(
                             new PhpDocParser(
                                 new TypeParser(),

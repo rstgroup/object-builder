@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
+namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Generator;
 
 use ReflectionClass;
 use ReflectionMethod;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Generator;
 use RstGroup\ObjectBuilder\PhpDocParser;
 
-final class Anonymous implements PatternGenerator
+final class Anonymous implements Generator
 {
     private const DEFAULT_VALUES_PATTERN =
     '    $default = %s;'
@@ -54,7 +54,7 @@ final class Anonymous implements PatternGenerator
         $constructor = $class->getConstructor();
 
         if (null === $constructor) {
-            return new Node\Complex($class->getName(), $name, false, null);
+            return new Node\Composite($class->getName(), $name, false, null);
         }
 
         return $this->getNodes($constructor, $name);
@@ -62,7 +62,7 @@ final class Anonymous implements PatternGenerator
 
     private function getNodes(ReflectionMethod $method, string $name = ''): Node
     {
-        $node = new Node\Complex(
+        $node = new Node\Composite(
             $method->getDeclaringClass()->getName(),
             $name,
             false,
@@ -130,7 +130,7 @@ final class Anonymous implements PatternGenerator
     {
         $values = [];
 
-        if ($node instanceof Node\Complex) {
+        if ($node instanceof Node\Composite) {
             foreach ($node->innerNodes() as $innerNode) {
                 $innerNodeDefaultValues = $this->getDefaultValues($innerNode);
                 if ([] === $innerNodeDefaultValues) {

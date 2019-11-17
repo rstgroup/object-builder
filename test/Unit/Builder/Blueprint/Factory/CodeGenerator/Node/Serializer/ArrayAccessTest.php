@@ -4,7 +4,7 @@ namespace RstGroup\ObjectBuilder\Test\Unit\Builder\Blueprint\Factory\CodeGenerat
 
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Complex;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Composite;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\ObjectList;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Scalar;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess;
@@ -33,7 +33,7 @@ class ArrayAccessTest extends TestCase
     /** @test */
     public function serializeComplexNodeToArrayAccessString(): void
     {
-        $node = new Complex('SomeClassName', 'someName', false, null);
+        $node = new Composite('SomeClassName', 'someName', false, null);
         $scalarStringNode = new Scalar('string', 'someStringName', false, null);
         $scalarIntNode = new Scalar('int', 'someInt', false, null);
         $node->add($scalarStringNode);
@@ -50,7 +50,7 @@ class ArrayAccessTest extends TestCase
     /** @test */
     public function serializeObjectListNodeToArrayAccessString(): void
     {
-        $objectNode = new Complex('SomeClassName', 'someName', false, null);
+        $objectNode = new Composite('SomeClassName', 'someName', false, null);
         $scalarStringNode = new Scalar('string', 'someStringName', false, null);
         $scalarIntNode = new Scalar('int', 'someInt', false, null);
         $objectNode->add($scalarStringNode);

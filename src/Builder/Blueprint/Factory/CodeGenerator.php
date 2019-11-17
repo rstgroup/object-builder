@@ -3,16 +3,16 @@
 namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
 
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Generator;
 use RstGroup\ObjectBuilder\BuildingError;
 
 final class CodeGenerator implements Factory
 {
-    /** @var PatternGenerator */
+    /** @var Generator */
     private $generator;
 
     /** @codeCoverageIgnore */
-    public function __construct(PatternGenerator $generator)
+    public function __construct(Generator $generator)
     {
         $this->generator = $generator;
     }

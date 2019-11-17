@@ -3,7 +3,7 @@
 namespace RstGroup\ObjectBuilder\Test\Integration\Builder\Blueprint\Factory\CodeGenerator\Store;
 
 use PHPUnit\Framework\TestCase;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore\Filesystem;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Store\Filesystem;
 
 class FilesystemTest extends TestCase
 {

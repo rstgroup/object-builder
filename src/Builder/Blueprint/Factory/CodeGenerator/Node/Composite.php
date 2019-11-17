@@ -4,7 +4,7 @@ namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
 
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node;
 
-final class Complex extends Node
+final class Composite extends Node
 {
     /** @var Node[] */
     private $nodes = [];

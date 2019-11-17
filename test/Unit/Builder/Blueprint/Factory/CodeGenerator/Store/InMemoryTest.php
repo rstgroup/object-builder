@@ -3,7 +3,7 @@
 namespace RstGroup\ObjectBuilder\Test\Unit\Builder\Blueprint\Factory\CodeGenerator\Store;
 
 use PHPUnit\Framework\TestCase;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore\Memory;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Store\Memory;
 
 class InMemoryTest extends TestCase
 {

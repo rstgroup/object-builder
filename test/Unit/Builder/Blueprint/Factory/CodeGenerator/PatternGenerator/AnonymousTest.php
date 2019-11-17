@@ -9,7 +9,7 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Node\Serializer\ArrayAccess;
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternGenerator\Anonymous;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Generator\Anonymous;
 use RstGroup\ObjectBuilder\PhpDocParser\PhpStan;
 use RstGroup\ObjectBuilder\Test\Object\Collection\WithoutUseStmtConstructor;
 use RstGroup\ObjectBuilder\Test\Object\ComplexHierarchy;

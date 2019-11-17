@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
+namespace RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Store;
 
-use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\PatternStore;
+use RstGroup\ObjectBuilder\Builder\Blueprint\Factory\CodeGenerator\Pattern\Store;
 
-final class Memory implements PatternStore
+final class Memory implements Store
 {
     /** @var string[] */
     private $store = [];

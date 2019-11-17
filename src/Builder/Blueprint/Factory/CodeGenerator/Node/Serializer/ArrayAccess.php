@@ -26,7 +26,7 @@ final class ArrayAccess implements Serializer
             return $this->serializeScalarNode($node);
         }
 
-        if ($node instanceof Node\Complex) {
+        if ($node instanceof Node\Composite) {
             return $this->serializeComplexNode($node);
         }
 
@@ -44,7 +44,7 @@ final class ArrayAccess implements Serializer
         return sprintf(static::SCALAR_PATTERN, $node->name());
     }
 
-    private function serializeComplexNode(Node\Complex $node): string
+    private function serializeComplexNode(Node\Composite $node): string
     {
         $nodes = [];
         foreach ($node->innerNodes() as $innerNode) {
