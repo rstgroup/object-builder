@@ -5,11 +5,15 @@
   "keywords": [],
   "require": {
     "php": "^7.2",
-    "phpstan/phpdoc-parser": "^0.3.0",
-    "roave/better-reflection": "^3.0"
+    "phpstan/phpdoc-parser": "^0.3.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.2"
+    "friendsofphp/php-cs-fixer": "^2.12",
+    "phpstan/phpstan": "^0.10.2",
+    "phpstan/phpstan-phpunit": "^0.10.0",
+    "phpstan/phpstan-strict-rules": "^0.10.1",
+    "phpunit/phpunit": "^7.2",
+    "slevomat/coding-standard": "^4.6"
   },
   "autoload": {
     "psr-4": {
@@ -25,10 +29,35 @@
     "sort-packages": true
   },
   "scripts": {
-    "check": [
-      "@test"
+    "test-unit": "phpunit -c phpunit.xml --testsuite unit --colors=always ",
+    "test-unit-coverage": "phpunit -c phpunit.xml --testsuite unit --coverage-php test/result/unit.cov --colors=never",
+    "test-component": "phpunit -c phpunit.xml --testsuite component --colors=always ",
+    "test-component-coverage": "phpunit -c phpunit.xml --testsuite component --coverage-php test/result/component.cov --colors=never",
+    "test-integration": "phpunit -c phpunit.xml --testsuite integration --colors=always ",
+    "test-integration-coverage": "phpunit -c phpunit.xml --testsuite integration --coverage-php test/result/integration.cov --colors=never",
+    "cs-phpstan": [
+      "phpstan analyse --level=max --ansi --no-progress -c phpstan.neon src"
     ],
-    "test": "phpunit --colors=always",
-    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    "cs-phpcs": [
+      "phpcs --standard=ruleset.xml --extensions=php -v --ignore=.config.php src test --cache=.phpcs.cache"
+    ],
+    "cs-phpcs-fix": [
+      "phpcbf --standard=ruleset.xml --extensions=php --ignore=.config.php src test --cache=.phpcs.cache"
+    ],
+    "cs-php-cs-fixer": [
+      "php-cs-fixer fix src --allow-risky yes --diff --show-progress dots --verbose --dry-run"
+    ],
+    "cs-php-cs-fixer-fix": [
+      "php-cs-fixer fix src --allow-risky yes --diff --show-progress dots --verbose"
+    ],
+    "cs-check": [
+      "@cs-phpcs",
+      "@cs-php-cs-fixer",
+      "@cs-phpstan"
+    ],
+    "cs-fix": [
+      "@cs-phpcs-fix",
+      "@cs-php-cs-fixer-fix"
+    ]
   }
 }

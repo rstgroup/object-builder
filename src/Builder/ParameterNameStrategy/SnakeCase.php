@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\ParameterNameStrategy;
 
@@ -8,15 +8,15 @@ final class SnakeCase implements ParameterNameStrategy
 {
     public function isFulfilled(string $parameterName): bool
     {
-        return preg_match('/^[^\s-]+$/i', $parameterName) === 1;
+        return 1 === preg_match('/^[^\s-]+$/i', $parameterName);
     }
 
     public function getName(string $parameterName): string
     {
-        return $this->snakeCaseToCamelCase($parameterName);
+        return $this->toCamelCase($parameterName);
     }
 
-    private function snakeCaseToCamelCase(string $string): string
+    private function toCamelCase(string $string): string
     {
         $str = str_replace('_', '', ucwords($string, '_'));
 

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder\ParameterNameStrategy;
 
@@ -8,7 +8,7 @@ final class Simple implements ParameterNameStrategy
 {
     public function isFulfilled(string $parameterName): bool
     {
-        return preg_match('/^[^\s_-]+$/i', $parameterName) === 1;
+        return 1 === preg_match('/^[^\s_-]+$/i', $parameterName);
     }
 
     public function getName(string $parameterName): string

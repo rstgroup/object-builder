@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace RstGroup\ObjectBuilder\Builder;
 
+use PhpParser\Lexer\Emulative;
 use PhpParser\Node\Stmt;
+use PhpParser\ParserFactory;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -11,15 +13,16 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
-use Roave\BetterReflection\BetterReflection;
 use RstGroup\ObjectBuilder\Builder;
-use RstGroup\ObjectBuilder\BuilderException;
+use RstGroup\ObjectBuilder\BuildingError;
 use Throwable;
 
 final class Reflection implements Builder
 {
+    /** @var ParameterNameStrategy */
     private $parameterNameStrategy;
 
+    /** @codeCoverageIgnore */
     public function __construct(ParameterNameStrategy $parameterNameStrategy)
     {
         $this->parameterNameStrategy = $parameterNameStrategy;
@@ -27,24 +30,32 @@ final class Reflection implements Builder
 
     /**
      * @param mixed[] $data
-     * @throws BuilderException
+     * @throws BuildingError
      */
     public function build(string $class, array $data): object
     {
         try {
             $classReflection = new ReflectionClass($class);
 
-            /** @var ReflectionMethod $constructorMethod */
             $constructor = $classReflection->getConstructor();
+            $parameters = [];
 
-            $parameters = iterator_to_array($this->collect($constructor, $data));
+            if (null !== $constructor) {
+                /** @var \Traversable $iterator */
+                $iterator = $this->collect($constructor, $data);
+                $parameters = iterator_to_array($iterator);
+            }
 
             return new $class(...$parameters);
         } catch (Throwable $exception) {
-            throw new BuilderException('Cant build object', 0, $exception);
+            throw new BuildingError('Cant build object', 0, $exception);
         }
     }
 
+    /**
+     * @param mixed[] $data
+     * @return mixed[]
+     */
     private function collect(ReflectionMethod $constructor, array $data): iterable
     {
         foreach ($constructor->getParameters() as $parameter) {
@@ -72,6 +83,7 @@ final class Reflection implements Builder
         }
     }
 
+    /** @param mixed[] $data */
     private function parameterDataIsInData(string $parameterName, array $data): bool
     {
         foreach (array_keys($data) as $key) {
@@ -92,21 +104,14 @@ final class Reflection implements Builder
         $class = $parameter->getClass();
 
         if (null !== $class) {
-            $name = $class->getName();
-            /** @var ReflectionMethod $constructorMethod */
-            $constructorMethod = $class->getConstructor();
-            $parameters = [];
-
-            if (null !== $constructorMethod) {
-                $parameters = iterator_to_array($this->collect($constructorMethod, $data));
-            }
-
-            return new $name(...$parameters);
+            return $this->build($class->getName(), $data);
         }
 
         if ($parameter->isArray()) {
             $parser = new PhpDocParser(new TypeParser(), new ConstExprParser());
-            $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($constructor->getDocComment())));
+            /** @var string $comment */
+            $comment = $constructor->getDocComment();
+            $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($comment)));
             foreach ($node->getParamTagValues() as $node) {
                 if ($node->parameterName === '$' . $parameter->getName()) {
                     $typeName = $node->type->type->name;
@@ -114,15 +119,33 @@ final class Reflection implements Builder
                         continue;
                     }
                     $list = [];
+                    $parser = (new ParserFactory())->create(
+                        ParserFactory::PREFER_PHP7,
+                        new Emulative([
+                            'usedAttributes' => [
+                                'comments',
+                                'startLine',
+                                'endLine',
+                                'startFilePos',
+                                'endFilePos',
+                            ],
+                        ])
+                    );
 
-                    $parser = (new BetterReflection())->phpParser();
+                    /** @var ReflectionClass $class */
+                    $class = $parameter->getDeclaringClass();
+                    /** @var string $fileName */
+                    $fileName = $class->getFileName();
+                    /** @var string $phpFileContent */
+                    $phpFileContent = file_get_contents($fileName);
+                    /** @var Stmt[] $parsedFile */
+                    $parsedFile = $parser->parse($phpFileContent);
 
-                    $parsedFile = $parser->parse(file_get_contents($constructor->getDeclaringClass()->getFileName()));
                     $namespace = $this->getNamespaceStmt($parsedFile);
                     $uses = $this->getUseStmts($namespace);
                     $namespaces = $this->getUsesNamespaces($uses);
 
-                    foreach($data as $objectConstructorData) {
+                    foreach ($data as $objectConstructorData) {
                         $list[] = $this->build(
                             $this->getFullClassName($typeName, $namespaces, $constructor->getDeclaringClass()),
                             $objectConstructorData
@@ -147,7 +170,7 @@ final class Reflection implements Builder
             'mixed',
         ];
 
-        return in_array($value, $scalars);
+        return in_array($value, $scalars, true);
     }
 
     /**
@@ -167,14 +190,9 @@ final class Reflection implements Builder
     /** @return Stmt\Use_[] */
     private function getUseStmts(Stmt\Namespace_ $node): array
     {
-        $uses = [];
-        foreach ($node->stmts as $node) {
-            if ($node instanceof Stmt\Use_) {
-                $uses[]= $node;
-            }
-        }
-
-        return $uses;
+        return array_filter($node->stmts, function (Stmt $node): bool {
+            return $node instanceof Stmt\Use_;
+        });
     }
 
     /**
@@ -183,17 +201,15 @@ final class Reflection implements Builder
      */
     private function getUsesNamespaces(array $uses): array
     {
-        $names = [];
-        foreach ($uses as $use) {
-            $names[] = $use->uses[0]->name->toString();
-        }
-
-        return $names;
+        return array_map(function (Stmt\Use_ $use): string {
+            return $use->uses[0]->name->toString();
+        }, $uses);
     }
 
+    /** @param string[] $namespaces */
     private function getFullClassName(string $name, array $namespaces, ReflectionClass $class): string
     {
-        if ($name[0] === '\\') {
+        if ('\\' === $name[0]) {
             return $name;
         }
 
@@ -206,7 +222,7 @@ final class Reflection implements Builder
 
     /**
      * @param string[] $namespaces
-     * @throws BuilderException
+     * @throws BuildingError
      */
     private function getNamespaceForClass(string $className, array $namespaces): string
     {
@@ -216,13 +232,13 @@ final class Reflection implements Builder
             }
         }
 
-        throw new BuilderException('Can not resolve namespace for class ' . $className);
+        throw new BuildingError('Can not resolve namespace for class ' . $className);
     }
 
     private function endsWith(string $haystack, string $needle): bool
     {
         $length = strlen($needle);
 
-        return $length === 0 || (substr($haystack, -$length) === $needle);
+        return 0 === $length || (substr($haystack, -$length) === $needle);
     }
 }

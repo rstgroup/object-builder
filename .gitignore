@@ -1,2 +1,7 @@
 composer.lock
 vendor
+.idea
+.php_cs.cache
+.phpcs.cache
+data
+test/result
