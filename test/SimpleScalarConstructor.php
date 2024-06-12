@@ -1,15 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RstGroup\ObjectBuilder\Test;
 
-class SimpleScalarConstructor
+final class SimpleScalarConstructor
 {
-    public $someString;
-    public $someInt;
-
-    public function __construct(string $someString, int $someInt)
+    public function __construct(public string $someString, public int $someInt)
     {
-        $this->someString = $someString;
-        $this->someInt = $someInt;
     }
 }

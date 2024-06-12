@@ -1,16 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RstGroup\ObjectBuilder\Test;
 
-class ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor
-{
-    public $list;
+use RstGroup\ObjectBuilder\Test\Object\SomeObject;
 
+final class ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor
+{
     /**
-     * @param \RstGroup\ObjectBuilder\Test\Object\SomeObject[] $list
+     * @param SomeObject[] $list
      */
-    public function __construct(array $list)
+    public function __construct(public array $list)
     {
-        $this->list = $list;
     }
 }

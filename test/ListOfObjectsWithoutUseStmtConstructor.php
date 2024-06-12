@@ -1,16 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RstGroup\ObjectBuilder\Test;
 
-class ListOfObjectsWithoutUseStmtConstructor
+final class ListOfObjectsWithoutUseStmtConstructor
 {
-    public $list;
-
     /**
      * @param SimpleScalarConstructor[] $list
      */
-    public function __construct(array $list)
+    public function __construct(public array $list)
     {
-        $this->list = $list;
     }
 }

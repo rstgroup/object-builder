@@ -1,67 +1,60 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\ParameterNameStrategy;
 
+use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\SnakeCase;
 
-class SnakeCaseTest extends TestCase
+final class SnakeCaseTest extends TestCase
 {
-    /** @var SnakeCase */
-    private static $strategy;
+    private SnakeCase $strategy;
 
-    public static function setUpBeforeClass()
+    public function setUp(): void
     {
-        static::$strategy = new SnakeCase();
+        $this->strategy = new SnakeCase();
     }
 
-    /**
-     * @test
-     * @dataProvider validStrings
-     */
-    public function snakeCaseStrategyReturnTrueForStringsOnlyInSneakCaseFormat(string $string)
+    #[DataProvider('validStrings')]
+    #[Test]
+    public function snakeCaseStrategyReturnTrueForStringsOnlyInSneakCaseFormat(string $string): void
     {
-        $isFulfilled = static::$strategy->isFulfilled($string);
+        $isFulfilled = $this->strategy->isFulfilled($string);
 
         $this->assertTrue($isFulfilled);
     }
 
-    /**
-     * @test
-     * @dataProvider invalidStrings
-     */
-    public function snakeCaseStrategyReturnFalseForStringsWitUnderscoreOrSpace(string $string)
+    #[DataProvider('invalidStrings')]
+    #[Test]
+    public function snakeCaseStrategyReturnFalseForStringsWitUnderscoreOrSpace(string $string): void
     {
-        $isFulfilled = static::$strategy->isFulfilled($string);
+        $isFulfilled = $this->strategy->isFulfilled($string);
 
         $this->assertFalse($isFulfilled);
     }
 
-    /** @test */
-    public function snakeCaseStrategyReturnGivenParameterAsCamelCase()
+    #[Test]
+    public function snakeCaseStrategyReturnGivenParameterAsCamelCase(): void
     {
-        $string = static::$strategy->getName('simple_snake_case');
+        $string = $this->strategy->getName('simple_snake_case');
 
         $this->assertSame('simpleSnakeCase', $string);
     }
 
-    /** @return string[][] */
-    public function validStrings(): array
+    public static function validStrings(): Iterator
     {
-        return [
-            'simple string' => ['string'],
-            'sneak case string' => ['valid_string'],
-            'sneak case string with number' => ['valid_string_1'],
-        ];
+        yield 'simple string' => ['string'];
+        yield 'sneak case string' => ['valid_string'];
+        yield 'sneak case string with number' => ['valid_string_1'];
     }
 
-    /** @return string[][] */
-    public function invalidStrings(): array
+    public static function invalidStrings(): Iterator
     {
-        return [
-            'string with space' => ['string string'],
-            'string with minus' => ['string-string'],
-        ];
+        yield 'string with space' => ['string string'];
+        yield 'string with minus' => ['string-string'];
     }
 }
