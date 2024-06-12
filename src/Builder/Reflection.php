@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RstGroup\ObjectBuilder\Builder;
 
+use Iterator;
 use PhpParser\Node\Stmt;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
@@ -9,7 +12,9 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
 use Roave\BetterReflection\BetterReflection;
 use RstGroup\ObjectBuilder\Builder;
@@ -18,15 +23,11 @@ use Throwable;
 
 final class Reflection implements Builder
 {
-    private $parameterNameStrategy;
-
-    public function __construct(ParameterNameStrategy $parameterNameStrategy)
+    public function __construct(private readonly ParameterNameStrategy $parameterNameStrategy)
     {
-        $this->parameterNameStrategy = $parameterNameStrategy;
     }
 
     /**
-     * @param mixed[] $data
      * @throws BuilderException
      */
     public function build(string $class, array $data): object
@@ -34,18 +35,18 @@ final class Reflection implements Builder
         try {
             $classReflection = new ReflectionClass($class);
 
-            /** @var ReflectionMethod $constructorMethod */
+            /** @var ReflectionMethod|null $constructor */
             $constructor = $classReflection->getConstructor();
 
             $parameters = iterator_to_array($this->collect($constructor, $data));
 
             return new $class(...$parameters);
-        } catch (Throwable $exception) {
-            throw new BuilderException('Cant build object', 0, $exception);
+        } catch (Throwable $throwable) {
+            throw new BuilderException('Cant build object', 0, $throwable);
         }
     }
 
-    private function collect(ReflectionMethod $constructor, array $data): iterable
+    private function collect(ReflectionMethod $constructor, array $data): Iterator
     {
         foreach ($constructor->getParameters() as $parameter) {
             $name = $parameter->getName();
@@ -84,17 +85,19 @@ final class Reflection implements Builder
     }
 
     /**
-     * @param mixed $data
-     * @return mixed
+     * @throws BuilderException
+     * @throws ReflectionException
      */
-    private function buildParameter(ReflectionParameter $parameter, $data, ReflectionMethod $constructor)
+    private function buildParameter(ReflectionParameter $parameter, mixed $data, ReflectionMethod $constructor): mixed
     {
-        $class = $parameter->getClass();
+        $parameterType = $parameter->getType();
 
-        if (null !== $class) {
-            $name = $class->getName();
+        if ($parameterType instanceof ReflectionNamedType && !$parameterType->isBuiltin()) {
+            $parameterClass = new ReflectionClass($parameterType->getName());
+
+            $name = $parameterClass->getName();
             /** @var ReflectionMethod $constructorMethod */
-            $constructorMethod = $class->getConstructor();
+            $constructorMethod = $parameterClass->getConstructor();
             $parameters = [];
 
             if (null !== $constructorMethod) {
@@ -104,7 +107,7 @@ final class Reflection implements Builder
             return new $name(...$parameters);
         }
 
-        if ($parameter->isArray()) {
+        if ($parameterType instanceof ReflectionNamedType && $parameterType->getName() === 'array') {
             $parser = new PhpDocParser(new TypeParser(), new ConstExprParser());
             $node = $parser->parse(new TokenIterator((new Lexer())->tokenize($constructor->getDocComment())));
             foreach ($node->getParamTagValues() as $node) {
@@ -113,6 +116,7 @@ final class Reflection implements Builder
                     if ($this->isScalar($typeName)) {
                         continue;
                     }
+
                     $list = [];
 
                     $parser = (new BetterReflection())->phpParser();
@@ -122,7 +126,7 @@ final class Reflection implements Builder
                     $uses = $this->getUseStmts($namespace);
                     $namespaces = $this->getUsesNamespaces($uses);
 
-                    foreach($data as $objectConstructorData) {
+                    foreach ($data as $objectConstructorData) {
                         $list[] = $this->build(
                             $this->getFullClassName($typeName, $namespaces, $constructor->getDeclaringClass()),
                             $objectConstructorData
@@ -170,7 +174,7 @@ final class Reflection implements Builder
         $uses = [];
         foreach ($node->stmts as $node) {
             if ($node instanceof Stmt\Use_) {
-                $uses[]= $node;
+                $uses[] = $node;
             }
         }
 
@@ -197,7 +201,7 @@ final class Reflection implements Builder
             return $name;
         }
 
-        if (0 === count($namespaces)) {
+        if ([] === $namespaces) {
             return $class->getNamespaceName() . '\\' . $name;
         }
 
