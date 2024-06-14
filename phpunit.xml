@@ -1,29 +1,26 @@
-<phpunit bootstrap="vendor/autoload.php"
-         backupStaticAttributes="false"
+<?xml version="1.0"?>
+<phpunit
+         bootstrap="vendor/autoload.php"
          backupGlobals="false"
          colors="true"
          stopOnError="false"
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         verbose="true">
-
-    <testsuites>
-        <testsuite name="unit">
-            <directory>test/unit/</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-            <exclude>
-                <directory suffix=".php">test</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-
+         cacheDirectory=".phpunit.cache"
+         backupStaticProperties="false"
+>
+  <testsuites>
+    <testsuite name="unit">
+      <directory>test/unit/</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">test</directory>
+    </exclude>
+  </source>
 </phpunit>

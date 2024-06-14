@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 use RstGroup\ObjectBuilder\Builder\Reflection;
@@ -19,18 +22,17 @@ use RstGroup\ObjectBuilder\Test\SimpleScalarConstructor;
 use RstGroup\ObjectBuilder\Test\SomeAggregateRoot;
 use RstGroup\ObjectBuilder\Test\SomeObjectWithEmptyConstructor;
 
-class ReflectionTest extends TestCase
+final class ReflectionTest extends TestCase
 {
-    /** @var Reflection */
-    private static $builder;
+    private Reflection $builder;
 
-    public static function setUpBeforeClass()
+    public function setUp(): void
     {
-        static::$builder = new Reflection(new Simple());
+        $this->builder = new Reflection(new Simple());
     }
 
-    /** @test */
-    public function iCanBuildSimpleObjectWithScalarValuesInConstructor()
+    #[Test]
+    public function iCanBuildSimpleObjectWithScalarValuesInConstructor(): void
     {
         $data = [
             'someString' => 'some string',
@@ -39,15 +41,15 @@ class ReflectionTest extends TestCase
         $class = SimpleScalarConstructor::class;
 
         /** @var SimpleScalarConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(SimpleScalarConstructor::class, $object);
         $this->assertSame('some string', $object->someString);
         $this->assertSame(999, $object->someInt);
     }
 
-    /** @test */
-    public function iCanBuildSimpleObjectWithScalarAndObjectValuesInConstructor()
+    #[Test]
+    public function iCanBuildSimpleObjectWithScalarAndObjectValuesInConstructor(): void
     {
         $data = [
             'someString' => 'some string',
@@ -57,7 +59,7 @@ class ReflectionTest extends TestCase
         $class = SimpleMixedConstructor::class;
 
         /** @var SimpleMixedConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(SimpleMixedConstructor::class, $object);
         $this->assertSame('some string', $object->someString);
@@ -65,8 +67,8 @@ class ReflectionTest extends TestCase
         $this->assertInstanceOf(SomeObjectWithEmptyConstructor::class, $object->someObject);
     }
 
-    /** @test */
-    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor()
+    #[Test]
+    public function iCanBuildSimpleObjectWithDefaultValuesInConstructor(): void
     {
         $data = [
             'someObject' => [],
@@ -74,7 +76,7 @@ class ReflectionTest extends TestCase
         $class = SimpleMixedConstructorWithDefaultValue::class;
 
         /** @var SimpleMixedConstructorWithDefaultValue $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(SimpleMixedConstructorWithDefaultValue::class, $object);
         $this->assertSame('some string', $object->someString);
@@ -82,8 +84,8 @@ class ReflectionTest extends TestCase
         $this->assertInstanceOf(SomeObjectWithEmptyConstructor::class, $object->someObject);
     }
 
-    /** @test */
-    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor()
+    #[Test]
+    public function iCanBuildObjectWithObjectCollectionWithoutUseInConstructor(): void
     {
         $data = [
             'list' => [
@@ -100,17 +102,15 @@ class ReflectionTest extends TestCase
         $class = ListOfObjectsWithoutUseStmtConstructor::class;
 
         /** @var ListOfObjectsWithoutUseStmtConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(ListOfObjectsWithoutUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
-        foreach($object->list as $element) {
-            $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
-        }
+        $this->assertContainsOnlyInstancesOf(SimpleScalarConstructor::class, $object->list);
     }
 
-    /** @test */
-    public function iCanBuildObjectWithObjectCollectionWithUseInConstructor()
+    #[Test]
+    public function iCanBuildObjectWithObjectCollectionWithUseInConstructor(): void
     {
         $data = [
             'list' => [
@@ -121,17 +121,15 @@ class ReflectionTest extends TestCase
         $class = ListOfObjectsWithUseStmtConstructor::class;
 
         /** @var ListOfObjectsWithUseStmtConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(ListOfObjectsWithUseStmtConstructor::class, $object);
         $this->assertCount(2, $object->list);
-        foreach($object->list as $element) {
-            $this->assertInstanceOf(SomeSecondObject::class, $element);
-        }
+        $this->assertContainsOnlyInstancesOf(SomeSecondObject::class, $object->list);
     }
 
-    /** @test */
-    public function iCanBuildObjectWithObjectCollectionWithoutUseButWithFQNTypedArrayInConstructor()
+    #[Test]
+    public function iCanBuildObjectWithObjectCollectionWithoutUseButWithFQNTypedArrayInConstructor(): void
     {
         $data = [
             'list' => [
@@ -142,17 +140,15 @@ class ReflectionTest extends TestCase
         $class = ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor::class;
 
         /** @var ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(ListOfObjectsWithoutUseButWithFQNTypedArrayConstructor::class, $object);
         $this->assertCount(2, $object->list);
-        foreach($object->list as $element) {
-            $this->assertInstanceOf(SomeObject::class, $element);
-        }
+        $this->assertContainsOnlyInstancesOf(SomeObject::class, $object->list);
     }
 
-    /** @test */
-    public function iCanBuildObjectWithScalarCollectionTypedArrayInConstructor()
+    #[Test]
+    public function iCanBuildObjectWithScalarCollectionTypedArrayInConstructor(): void
     {
         $data = [
             'list1' => ['str', 'str'],
@@ -161,21 +157,22 @@ class ReflectionTest extends TestCase
         $class = ListOfObjectsWithScalarTypedArrayConstructor::class;
 
         /** @var ListOfObjectsWithScalarTypedArrayConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayConstructor::class, $object);
         $this->assertCount(2, $object->list1);
         $this->assertCount(2, $object->list2);
-        foreach($object->list1 as $element) {
+        foreach ($object->list1 as $element) {
             $this->assertSame('str', $element);
         }
-        foreach($object->list2 as $element) {
+
+        foreach ($object->list2 as $element) {
             $this->assertSame('str', $element);
         }
     }
 
-    /** @test */
-    public function iCanBuildObjectWithBothScalarAndObjectCollectionTypedArrayInConstructor()
+    #[Test]
+    public function iCanBuildObjectWithBothScalarAndObjectCollectionTypedArrayInConstructor(): void
     {
         $data = [
             'list1' => ['str', 'str'],
@@ -193,21 +190,20 @@ class ReflectionTest extends TestCase
         $class = ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class;
 
         /** @var ListOfObjectsWithScalarTypedArrayAndObjectListConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(ListOfObjectsWithScalarTypedArrayAndObjectListConstructor::class, $object);
         $this->assertCount(2, $object->list1);
         $this->assertCount(2, $object->list2);
-        foreach($object->list1 as $element) {
+        foreach ($object->list1 as $element) {
             $this->assertSame('str', $element);
         }
-        foreach($object->list2 as $element) {
-            $this->assertInstanceOf(SimpleScalarConstructor::class, $element);
-        }
+
+        $this->assertContainsOnlyInstancesOf(SimpleScalarConstructor::class, $object->list2);
     }
 
-    /** @test */
-    public function iCanBuildAdvancedObjectHierarchy()
+    #[Test]
+    public function iCanBuildAdvancedObjectHierarchy(): void
     {
         $data = [
             'someString' => 'some string',
@@ -225,7 +221,7 @@ class ReflectionTest extends TestCase
         $class = SomeAggregateRoot::class;
 
         /** @var SomeAggregateRoot $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(SomeAggregateRoot::class, $object);
         $this->assertSame('some string', $object->someString);
@@ -236,8 +232,8 @@ class ReflectionTest extends TestCase
         $this->assertSame(2, $object->simpleObject2->someInt);
     }
 
-    /** @test */
-    public function iCanBuildObjectWithNullableParameterWithoutDefaultValue()
+    #[Test]
+    public function iCanBuildObjectWithNullableParameterWithoutDefaultValue(): void
     {
         $data = [
             'someString1' => 'some string1',
@@ -246,7 +242,7 @@ class ReflectionTest extends TestCase
         $class = SimpleNullableConstructor::class;
 
         /** @var SimpleNullableConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
         $this->assertSame('some string1', $object->someString1);
@@ -254,8 +250,8 @@ class ReflectionTest extends TestCase
         $this->assertNull($object->someInt);
     }
 
-    /** @test */
-    public function iCanBuildObjectWithNullableParameterWithHimValueValue()
+    #[Test]
+    public function iCanBuildObjectWithNullableParameterWithHimValueValue(): void
     {
         $data = [
             'someString1' => 'some string1',
@@ -265,7 +261,7 @@ class ReflectionTest extends TestCase
         $class = SimpleNullableConstructor::class;
 
         /** @var SimpleNullableConstructor $object */
-        $object = static::$builder->build($class, $data);
+        $object = $this->builder->build($class, $data);
 
         $this->assertInstanceOf(SimpleNullableConstructor::class, $object);
         $this->assertSame('some string1', $object->someString1);

@@ -1,68 +1,62 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RstGroup\ObjectBuilder\Test\unit\Builder\ParameterNameStrategy;
 
+use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RstGroup\ObjectBuilder\Builder\ParameterNameStrategy\Simple;
 
-class SimpleTest extends TestCase
+final class SimpleTest extends TestCase
 {
-    /** @var Simple */
-    private static $strategy;
+    private Simple $strategy;
 
-    public static function setUpBeforeClass()
+    public function setUp(): void
     {
-        static::$strategy = new Simple();
+        $this->strategy = new Simple();
     }
 
-    /**
-     * @test
-     * @dataProvider validStrings
-     */
-    public function simpleStrategyReturnTrueForStringsWithoutUnderscoreMinusAndSpace(string $string)
+    #[DataProvider('validStrings')]
+    #[Test]
+    public function simpleStrategyReturnTrueForStringsWithoutUnderscoreMinusAndSpace(string $string): void
     {
-        $isFulfilled = static::$strategy->isFulfilled($string);
+        $isFulfilled = $this->strategy->isFulfilled($string);
 
         $this->assertTrue($isFulfilled);
     }
 
-    /**
-     * @test
-     * @dataProvider invalidStrings
-     */
-    public function simpleStrategyReturnFalseForStringsWitUnderscoreOrMinusOrSpace(string $string)
+    #[DataProvider('invalidStrings')]
+    #[Test]
+    public function simpleStrategyReturnFalseForStringsWitUnderscoreOrMinusOrSpace(string $string): void
     {
-        $isFulfilled = static::$strategy->isFulfilled($string);
+        $isFulfilled = $this->strategy->isFulfilled($string);
 
         $this->assertFalse($isFulfilled);
     }
 
-    /** @test */
-    public function simpleStrategyReturnGivenParameterWithoutModification()
+    #[Test]
+    public function simpleStrategyReturnGivenParameterWithoutModification(): void
     {
-        $string = static::$strategy->getName('simpleCamelCase');
+        $string = $this->strategy->getName('simpleCamelCase');
 
         $this->assertSame('simpleCamelCase', $string);
     }
 
-    /** @return string[][] */
-    public function validStrings(): array
+    public static function validStrings(): Iterator
     {
-        return [
-            'simple string' => ['string'],
-            'camelCase string' => ['validString'],
-            'string with number' => ['valid1'],
-            'camelCase with number' => ['validString123String'],
-        ];
+        yield 'simple string' => ['string'];
+        yield 'camelCase string' => ['validString'];
+        yield 'string with number' => ['valid1'];
+        yield 'camelCase with number' => ['validString123String'];
     }
 
-    /** @return string[][] */
-    public function invalidStrings(): array
+    public static function invalidStrings(): Iterator
     {
-        return [
-            'string with space' => ['string string'],
-            'string with underscore' => ['string_string'],
-            'string with minus' => ['string-string'],
-        ];
+        yield 'string with space' => ['string string'];
+        yield 'string with underscore' => ['string_string'];
+        yield 'string with minus' => ['string-string'];
     }
 }
